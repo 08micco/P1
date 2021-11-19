@@ -1,1 +1,3 @@
-int main din mor;
+int lkåålålålålå = 10;
+int main() lkåålålålålå;
+hejsa119;
