@@ -1,0 +1,9 @@
+Snake case til funktion- og variablenavne:  min_funktion - min_variable
+Autoformatter: C/C++ extension i VScode
+
+Vi kommenterer løbende koden, og fokusere meget på dette. Vi bruger /* */ da det er kompatible med ansi-c
+
+Alt programmering foregår på engelsk. Dette indebærer variabel- og funktionsnavne samt kommentarer og prints
+
+Vi koder programmet så det virker med -ansi -Wall -pedantic 
+
