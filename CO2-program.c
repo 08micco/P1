@@ -20,7 +20,7 @@ char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven"
 
 struct appliance
 {
-    int appliances;
+    appliances appliance;
     double power_consumption;
 };
 typedef struct appliance appliance;
@@ -32,6 +32,7 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
+appliance get_data(double, int);
 
 int main(void)
 {
@@ -41,7 +42,7 @@ int main(void)
 
     plug1 = add_plug(plug1);
 
-    printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliances], plug1.power_consumption);
+    printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliance], plug1.power_consumption);
 
     return EXIT_SUCCESS;
 }
@@ -57,8 +58,16 @@ appliance add_plug(appliance plug)
            freezer, appliances_string[freezer]);
     scanf(" %d", &plug_type);
 
-    plug.appliances = plug_type;
+    plug.appliance = plug_type;
     plug.power_consumption = (rand() % 1700) + (float)rand() / RAND_MAX;
 
     return plug;
+}
+
+appliance get_data(double power_in_kwh, int appliance_name)
+{
+    struct appliance temp_appliance;
+    temp_appliance.appliance = appliance_name;
+    temp_appliance.power_consumption = power_in_kwh;
+    return temp_appliance;
 }
