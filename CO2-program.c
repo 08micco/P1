@@ -21,7 +21,7 @@ char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven"
 
 struct appliance
 {
-    appliances id;
+    int id;
     double power_consumption;
 };
 typedef struct appliance appliance;
@@ -33,7 +33,6 @@ struct user_profile
 };
 typedef struct user_profile user_profile;
 
-
 /* prototypes */
 void add_plug(appliance *);
 void compareFunction(user_profile, user_profile, appliance *);
@@ -42,11 +41,10 @@ void printTips(appliance *);
 /* Main program */
 int main(void)
 {
-
     appliance higher_consumption[APPLIANCE_MAX];
     user_profile user;
     user_profile general;
-  
+
     appliance plug[PLUGS_MAX];
 
     compareFunction(user, general, higher_consumption);
@@ -64,8 +62,7 @@ void add_plug(appliance *plug)
            refrigerator, appliances_string[refrigerator],
            freezer, appliances_string[freezer]);
 
-    scanf(" %d", &plug.appliance);
-    return plug;
+    scanf(" %d", &plug[1].id);
 }
 
 /* This function compares whether the users power consumption of all appliances are bigger og smaller than the average.
@@ -75,23 +72,22 @@ void compareFunction(user_profile user, user_profile general, appliance *higher_
     appliance lowerConsumption[APPLIANCE_MAX];
     int countHigh = 0, countLow = 0;
 
-        int i;
-    for (i = 1; i <= APPLIANCE_MAX; i++)
+    int i;
+    for (i = 1; i < APPLIANCE_MAX; i++)
     {
         /* Creates new array higher_consumption which contains power consumptions bigger than average */
         if (user.appliances[i].power_consumption > general.appliances[i].power_consumption)
         {
             printf("");
             higher_consumption[countHigh].power_consumption = user.appliances[i].power_consumption;
-            higher_consumption[countHigh].appliances = user.appliances[i].appliances;
+            higher_consumption[countHigh].id = user.appliances[i].id;
             countHigh++;
         }
-
         else
         {
             printf("");
             lowerConsumption[countLow].power_consumption = user.appliances[i].power_consumption;
-            lowerConsumption[countLow].appliances = user.appliances[i].appliances;
+            lowerConsumption[countLow].id = user.appliances[i].id;
             countLow++;
         }
 
