@@ -32,6 +32,7 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
+user_profile initialize_user_profile(user_profile);
 
 int main(void)
 {
@@ -39,6 +40,7 @@ int main(void)
     user_profile user_profile;
     appliance plug1;
 
+    initialize_user_profile(user_profile);
     plug1 = add_plug(plug1);
 
     printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliances], plug1.power_consumption);
@@ -61,4 +63,18 @@ appliance add_plug(appliance plug)
     plug.power_consumption = (rand() % 1700) + (float)rand() / RAND_MAX;
 
     return plug;
+}
+
+user_profile initialize_user_profile(user_profile p) /* User profile informations is set here */
+{
+    printf("What is the size of the household?\n"); /* Scan for household size to user profile*/
+    printf("Number of peoples: ");
+    scanf("%d", &p.household_size);
+
+    while (run) /* All the kitchen appliances is added to user profile here */
+    {
+        /* add_plug(p);*/
+    }
+
+    return p;
 }
