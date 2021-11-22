@@ -34,6 +34,7 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 /* prototypes */
+user_profile initialize_user_profile(user_profile);
 void add_plug(appliance *);
 void compareFunction(user_profile, user_profile, appliance *);
 void printTips(appliance *);
@@ -45,6 +46,7 @@ int main(void)
     user_profile user;
     user_profile general;
 
+    initialize_user_profile(user_profile);
     appliance plug[PLUGS_MAX];
 
     compareFunction(user, general, higher_consumption);
@@ -90,7 +92,7 @@ void compareFunction(user_profile user, user_profile general, appliance *higher_
             lowerConsumption[countLow].id = user.appliances[i].id;
             countLow++;
         }
-
+        
         /* Prints percentage of average */
         printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[i],
                user.appliances[i].power_consumption / general.appliances[i].power_consumption * 100);
@@ -100,4 +102,18 @@ void compareFunction(user_profile user, user_profile general, appliance *higher_
 void printTips(appliance *higher_consumption)
 {
     printf("Din mor er et tip");
+}
+
+user_profile initialize_user_profile(user_profile p) /* User profile informations is set here */
+{
+    printf("What is the size of the household?\n"); /* Scan for household size to user profile*/
+    printf("Number of peoples: ");
+    scanf("%d", &p.household_size);
+
+    while (run) /* All the kitchen appliances is added to user profile here */
+    {
+        /* add_plug(p);*/
+    }
+
+    return p;
 }
