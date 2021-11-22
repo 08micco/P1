@@ -28,6 +28,7 @@ typedef struct appliance appliance;
 struct user_profile
 {
     unsigned int household_size;
+    appliance appliances[APPLIANCE_MAX];
 };
 typedef struct user_profile user_profile;
 
