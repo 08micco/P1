@@ -114,48 +114,29 @@ void bar_chart (double *power, double *ref){
     for(double i = 0; i < (*power + *ref)/10; i++ ){
 
         if(*power >= *ref){
-
-            
             if (start > 0){
-            
                 printf("|   |");
             }
-            
-
             if (start2 > 0){
-                
-                printf("            |   |");
-                
+                printf("            |   |");   
             }
-
-
             if (start == 0){
                 printf("_____");
                 start++;
             }
-
             if(i >= (*power / 10) - (*ref / 10) && start2 == 0 ){
                 printf("            _____");
                 start2++;
             }
-
             printf("\n");
-
         }
-
         if(*power < *ref){
-
-            
             if (start > 0){
                 printf("|   |");
             }
-
             if (start2 > 0){
-
                 printf("         |   |");
-
             }
-
             if (i >= (*ref / 10) - (*power / 10) && start == 0){
                 printf("_____");
                 start++;
@@ -165,9 +146,7 @@ void bar_chart (double *power, double *ref){
                 printf("           _____");
                 start2++;
             }
-
             printf("\n");
-
         }
     }
 }
