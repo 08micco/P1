@@ -6,6 +6,8 @@
 
 #define APPLIANCE_MAX 6
 
+
+
 enum appliances
 {
     microwave = 1,
@@ -32,6 +34,10 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
+double total_consumption (appliance);
+void bar_chart(double *power, double *ref);
+
+void charts (appliance plug);
 
 int main(void)
 {
@@ -42,6 +48,8 @@ int main(void)
     plug1 = add_plug(plug1);
 
     printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliances], plug1.power_consumption);
+
+    charts(plug1);
 
     return EXIT_SUCCESS;
 }
@@ -61,4 +69,105 @@ appliance add_plug(appliance plug)
     plug.power_consumption = (rand() % 1700) + (float)rand() / RAND_MAX;
 
     return plug;
+}
+
+
+
+/* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
+
+void charts (appliance plug){
+    double general_power_consumption = 150; //kWh
+    double your_total_consumption = total_consumption(plug);
+    printf("Your total power consumtion %f:\n", your_total_consumption);
+
+    printf("The general powerusaged in Denmark is %f:\n", general_power_consumption);
+
+    if(your_total_consumption > general_power_consumption){
+        printf("You use %f procent more power then the general public\n", 
+        (your_total_consumption / general_power_consumption) * 100);
+    }
+    else {
+        printf("You use %f procent less power then the general public\n",
+        (general_power_consumption / your_total_consumption) * 100);
+    }
+
+    bar_chart(&your_total_consumption, &general_power_consumption);
+
+
+
+}
+
+double total_consumption (appliance plug){
+    double tot_con = 0;
+    for (int i = 0; i < sizeof(appliance) / sizeof(appliance) ; i++){
+        tot_con += plug.power_consumption;
+    }
+
+    return tot_con;
+}
+
+void bar_chart (double *power, double *ref){
+    int start = 0, start2 = 0;
+
+    printf("Your usagde:      General power usagde:\n");
+
+    for(double i = 0; i < (*power + *ref)/10; i++ ){
+
+        if(*power >= *ref){
+
+            
+            if (start > 0){
+            
+                printf("|   |");
+            }
+            
+
+            if (start2 > 0){
+                
+                printf("            |   |");
+                
+            }
+
+
+            if (start == 0){
+                printf("_____");
+                start++;
+            }
+
+            if(i >= (*power / 10) - (*ref / 10) && start2 == 0 ){
+                printf("            _____");
+                start2++;
+            }
+
+            printf("\n");
+
+        }
+
+        if(*power < *ref){
+
+            
+            if (start > 0){
+                printf("|   |");
+            }
+
+            if (start2 > 0){
+
+                printf("         |   |");
+
+            }
+
+            if (i >= (*ref / 10) - (*power / 10) && start == 0){
+                printf("_____");
+                start++;
+            }
+
+            if(start2 == 0 ){
+                printf("           _____");
+                start2++;
+            }
+
+            printf("\n");
+
+        }
+    }
 }
