@@ -38,19 +38,24 @@ user_profile initialize_user_profile(user_profile);
 void add_plug(appliance *);
 void compareFunction(user_profile, user_profile, appliance *);
 void printTips(appliance *);
+void write_appliance_data_to_file(FILE *, user_profile);
 
 /* Main program */
 int main(void)
 {
+    FILE *data_file;
+
     appliance higher_consumption[APPLIANCE_MAX];
     user_profile user;
     user_profile general;
 
-    initialize_user_profile(user_profile);
+    user = initialize_user_profile(user);
     appliance plug[PLUGS_MAX];
 
     compareFunction(user, general, higher_consumption);
     printTips(higher_consumption);
+
+    write_appliance_data_to_file(data_file, user);
 
     return EXIT_SUCCESS;
 }
@@ -92,7 +97,7 @@ void compareFunction(user_profile user, user_profile general, appliance *higher_
             lowerConsumption[countLow].id = user.appliances[i].id;
             countLow++;
         }
-        
+
         /* Prints percentage of average */
         printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[i],
                user.appliances[i].power_consumption / general.appliances[i].power_consumption * 100);
@@ -104,16 +109,40 @@ void printTips(appliance *higher_consumption)
     printf("Din mor er et tip");
 }
 
-user_profile initialize_user_profile(user_profile p) /* User profile informations is set here */
+user_profile initialize_user_profile(user_profile p) /* User profile informations is set    here */
 {
+    int run = 1;
+
     printf("What is the size of the household?\n"); /* Scan for household size to user profile*/
-    printf("Number of peoples: ");
+    printf("Number of people: ");
     scanf("%d", &p.household_size);
 
-    while (run) /* All the kitchen appliances is added to user profile here */
+    /* while (run)  All the kitchen appliances is added to user profile here 
     {
-        /* add_plug(p);*/
+        add_plug(p);
     }
+    */
 
     return p;
+}
+
+/* Thin function writes household size, appliance number and their power consumption to a file */
+void write_appliance_data_to_file(FILE *file, user_profile user)
+{
+    int i;
+    file = fopen("data/test.txt", "w+");
+
+    if (file == NULL)
+    {
+        printf("\nError while creating file\n");
+        exit(1);
+    }
+
+    fprintf(file, "Household size: %d\n", user.household_size);
+    for (i = 0; i <= APPLIANCE_MAX; i++)
+    {
+        fprintf(file, "Appliance: %d, Power Consumption: %f\n", user.appliances[i].id, user.appliances[i].power_consumption);
+    }
+
+    fclose(file);
 }
