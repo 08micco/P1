@@ -34,10 +34,9 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
-double total_consumption (appliance);
+double total_consumption (appliance plug[]);
 void bar_chart(double *power, double *ref);
-
-void charts (appliance plug);
+void charts (appliance plug []);
 
 int main(void)
 {
@@ -49,7 +48,7 @@ int main(void)
 
     printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliances], plug1.power_consumption);
 
-    charts(plug1);
+    charts(plug);
 
     return EXIT_SUCCESS;
 }
@@ -75,7 +74,7 @@ appliance add_plug(appliance plug)
 
 /* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
 
-void charts (appliance plug){
+void charts (appliance plug[]){
     double general_power_consumption = 150; //kWh
     double your_total_consumption = total_consumption(plug);
     printf("Your total power consumtion %f:\n", your_total_consumption);
@@ -97,10 +96,10 @@ void charts (appliance plug){
 
 }
 
-double total_consumption (appliance plug){
+double total_consumption (appliance plug[]){
     double tot_con = 0;
-    for (int i = 0; i < sizeof(appliance) / sizeof(appliance) ; i++){
-        tot_con += plug.power_consumption;
+    for (int i = 0; i < APPLIANCE_MAX; i++){
+        tot_con += plug[i].power_consumption;
     }
 
     return tot_con;
