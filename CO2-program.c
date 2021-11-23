@@ -29,26 +29,35 @@ typedef struct appliance appliance;
 struct user_profile
 {
     unsigned int household_size;
-    appliance appliances[APPLIANCE_MAX];
+    appliance plug[PLUGS_MAX];
 };
 typedef struct user_profile user_profile;
+
+struct average_profile
+{
+    unsigned int household_size;
+    appliance appliances[APPLIANCE_MAX];
+};
+typedef struct average_profile average_profile;
 
 /* prototypes */
 void add_plug(appliance *);
 void compareFunction(user_profile, user_profile, appliance *);
-void printTips(appliance *);
+void compare_plugs(user_profile, average_profile, appliance *, int);
+void printTips(appliance[PLUGS_MAX], int);
 
 /* Main program */
 int main(void)
 {
-    appliance higher_consumption[APPLIANCE_MAX];
+    appliance above_average_consumption[PLUGS_MAX];
     user_profile user;
-    user_profile general;
+    average_profile average;
+    int amount_of_plugs;
 
-    appliance plug[PLUGS_MAX];
+    add_plug(plug);
+    compare_plugs(user, average, above_average_consumption, amount_of_plugs);
 
-    compareFunction(user, general, higher_consumption);
-    printTips(higher_consumption);
+    printTips(above_average_consumption, amount_of_plugs);
 
     return EXIT_SUCCESS;
 }
@@ -65,39 +74,120 @@ void add_plug(appliance *plug)
     scanf(" %d", &plug[1].id);
 }
 
-/* This function compares whether the users power consumption of all appliances are bigger og smaller than the average.
-The instances where the user power consumption is higher than average is sorted into an array of structs called higher_consumption. Opposite for lowerConsumption. */
-void compareFunction(user_profile user, user_profile general, appliance *higher_consumption)
+compare_plug(user_profile user, average_profile average, appliance *above_average_consumption, int amount_of_plugs)
 {
-    appliance lowerConsumption[APPLIANCE_MAX];
+    int i;
+    int count = 1;
+    int temp_appliance;
+    for (i = 1; i < amount_of_plugs; i++)
+    {
+        switch (user.plug[i].id)
+        {
+        case microwave:
+            if (user.plug[i].power_consumption > average.appliances[microwave].power_consumption)
+            {
+                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count].id = microwave;
+                count++;
+                temp_appliance = microwave;
+            }
+            break;
+
+        case kettle:
+            if (user.plug[i].power_consumption > average.appliances[kettle].power_consumption)
+            {
+                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count].id = kettle;
+                count++;
+                temp_appliance = kettle;
+            }
+            break;
+
+        case oven:
+            if (user.plug[i].power_consumption > average.appliances[oven].power_consumption)
+            {
+                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count].id = oven;
+                count++;
+                temp_appliance = oven;
+            }
+            else
+
+                break;
+
+        case refrigerator:
+            if (user.plug[i].power_consumption > average.appliances[refrigerator].power_consumption)
+            {
+                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count].id = refrigerator;
+                count++;
+                temp_appliance = refrigerator;
+            }
+            break;
+
+        case freezer:
+            if (user.plug[i].power_consumption > average.appliances[freezer].power_consumption)
+            {
+                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count].id = freezer;
+                count++;
+                temp_appliance = freezer;
+            }
+            break;
+
+        default:
+            printf("\n\nPool mig på Eddies\n\n");
+            break;
+        }
+
+        /* Prints percentage of average */
+        printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[temp_appliance],
+               user.plug[i].power_consumption / average.appliances[temp_appliance].power_consumption * 100);
+    }
+}
+
+/* This function compares whether the users power consumption of all appliances are bigger og smaller than the average.
+The instances where the user power consumption is higher than average is sorted into an array of structs called above_average_consumption. Opposite for lower_consumption. */
+void compareFunction(user_profile user, user_profile general, appliance *above_average_consumption)
+{
+    /* appliance lower_consumption[APPLIANCE_MAX];
     int countHigh = 0, countLow = 0;
 
     int i;
     for (i = 1; i < APPLIANCE_MAX; i++)
     {
-        /* Creates new array higher_consumption which contains power consumptions bigger than average */
+        // Creates new array above_average_consumption which contains power consumptions bigger than average
         if (user.appliances[i].power_consumption > general.appliances[i].power_consumption)
         {
             printf("");
-            higher_consumption[countHigh].power_consumption = user.appliances[i].power_consumption;
-            higher_consumption[countHigh].id = user.appliances[i].id;
+            above_average_consumption[countHigh].power_consumption = user.appliances[i].power_consumption;
+            above_average_consumption[countHigh].id = user.appliances[i].id;
             countHigh++;
         }
         else
         {
             printf("");
-            lowerConsumption[countLow].power_consumption = user.appliances[i].power_consumption;
-            lowerConsumption[countLow].id = user.appliances[i].id;
+            lower_consumption[countLow].power_consumption = user.appliances[i].power_consumption;
+            lower_consumption[countLow].id = user.appliances[i].id;
             countLow++;
         }
 
-        /* Prints percentage of average */
+        // Prints percentage of average
         printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[i],
                user.appliances[i].power_consumption / general.appliances[i].power_consumption * 100);
-    }
+    } */
 }
 
-void printTips(appliance *higher_consumption)
+/* Prints tips on areas, where the users consumption is higher than average */
+void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
 {
-    printf("Din mor er et tip");
+    char *tips[APPLIANCE_MAX] = {"empty", "dont boil too much water", "and so on..."};
+    int i;
+
+    printf("\nYou need to improve on the following appliances: \n");
+
+    for (i = 1; i < amount_of_plugs; i++)
+    {
+        printf("Tip number %d: %s, is %s \n", i, appliances_string[list_of_appliances->id], tips[list_of_appliances->id]);
+    }
 }
