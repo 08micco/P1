@@ -34,9 +34,9 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
-double total_consumption (appliance plug[]);
+double total_consumption (appliance plug);
 void bar_chart(double *power, double *ref);
-void charts (appliance plug []);
+void charts (appliance plug );
 
 int main(void)
 {
@@ -48,7 +48,7 @@ int main(void)
 
     printf("\nPower usage of %s is %.2lf kWh.\n", appliances_string[plug1.appliances], plug1.power_consumption);
 
-    charts(plug);
+    charts(plug1);
 
     return EXIT_SUCCESS;
 }
@@ -74,7 +74,7 @@ appliance add_plug(appliance plug)
 
 /* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
 
-void charts (appliance plug[]){
+void charts (appliance plug){
     double general_power_consumption = 150; //kWh
     double your_total_consumption = total_consumption(plug);
     printf("Your total power consumtion %f:\n", your_total_consumption);
@@ -82,12 +82,12 @@ void charts (appliance plug[]){
     printf("The general powerusaged in Denmark is %f:\n", general_power_consumption);
 
     if(your_total_consumption > general_power_consumption){
-        printf("You use %f procent more power then the general public\n", 
-        (your_total_consumption / general_power_consumption) * 100);
+        printf("You use %f%% more power then the general public\n", 
+        (percent(general_power_consumption, your_total_consumption));
     }
     else {
-        printf("You use %f procent less power then the general public\n",
-        (general_power_consumption / your_total_consumption) * 100);
+        printf("You use %f%% less power then the general public\n",
+        (percent(your_total_consumption, general_power_consumption));
     }
 
     bar_chart(&your_total_consumption, &general_power_consumption);
@@ -96,10 +96,10 @@ void charts (appliance plug[]){
 
 }
 
-double total_consumption (appliance plug[]){
+double total_consumption (appliance plug){
     double tot_con = 0;
     for (int i = 0; i < APPLIANCE_MAX; i++){
-        tot_con += plug[i].power_consumption;
+        tot_con += plug.power_consumption;
     }
 
     return tot_con;
@@ -129,7 +129,7 @@ void bar_chart (double *power, double *ref){
             }
             printf("\n");
         }
-        if(*power < *ref){
+        else if(*power < *ref){
             if (start > 0){
                 printf("|   |");
             }
@@ -148,4 +148,9 @@ void bar_chart (double *power, double *ref){
             printf("\n");
         }
     }
+}
+/* Stor på a, lille på b, hvis du går efter percent af
+Og omvent hvis du går efter hvor meget b er større end a */
+double percent (double a, double b){
+    return (a / b) * 100;
 }
