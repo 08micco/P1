@@ -39,10 +39,13 @@ void add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
 void printTips(appliance *);
 void print_break(void);
+void write_appliance_data_to_file(FILE *, user_profile);
 
 /* Main program */
 int main(void)
 {
+    FILE *data_file;
+
     appliance higher_consumption[APPLIANCE_MAX];
     user_profile user;
     user_profile general;
@@ -52,6 +55,8 @@ int main(void)
 
     //compareFunction(user, general, higher_consumption);
     //printTips(higher_consumption);
+
+    write_appliance_data_to_file(data_file, user);
 
     return EXIT_SUCCESS;
 }
@@ -96,7 +101,8 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
         }
         else
             run = 0;
-    }
+        }
+  
     printf("\nplugs: %d  size %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
     return user;
 }
@@ -105,4 +111,26 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
 void print_break(void)
 {
     printf("----------------------------------------------------\n");
+}
+
+
+/* Thin function writes household size, appliance number and their power consumption to a file */
+void write_appliance_data_to_file(FILE *file, user_profile user)
+{
+    int i;
+    file = fopen("data/test.txt", "w+");
+
+    if (file == NULL)
+    {
+        printf("\nError while creating file\n");
+        exit(1);
+    }
+
+    fprintf(file, "Household size: %d\n", user.household_size);
+    for (i = 0; i <= APPLIANCE_MAX; i++)
+    {
+        fprintf(file, "Appliance: %d, Power Consumption: %f\n", user.appliances[i].id, user.appliances[i].power_consumption);
+    }
+
+    fclose(file);
 }
