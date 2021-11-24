@@ -34,6 +34,7 @@ struct user_profile
 typedef struct user_profile user_profile;
 
 appliance add_plug(appliance);
+double percent(double, double);
 double total_consumption (appliance plug);
 void bar_chart(double *power, double *ref);
 void charts (appliance plug );
@@ -65,7 +66,7 @@ appliance add_plug(appliance plug)
     scanf(" %d", &plug_type);
 
     plug.appliances = plug_type;
-    plug.power_consumption = (rand() % 1700) + (float)rand() / RAND_MAX;
+    plug.power_consumption = (rand() % 200) + (float)rand() / RAND_MAX;
 
     return plug;
 }
@@ -83,11 +84,11 @@ void charts (appliance plug){
 
     if(your_total_consumption > general_power_consumption){
         printf("You use %f%% more power then the general public\n", 
-        (percent(general_power_consumption, your_total_consumption));
+        (percent(your_total_consumption, general_power_consumption)));
     }
     else {
         printf("You use %f%% less power then the general public\n",
-        (percent(your_total_consumption, general_power_consumption));
+        (percent(general_power_consumption, your_total_consumption)));
     }
 
     bar_chart(&your_total_consumption, &general_power_consumption);
@@ -108,46 +109,29 @@ double total_consumption (appliance plug){
 void bar_chart (double *power, double *ref){
     int start = 0, start2 = 0;
 
-    printf("Your usagde:      General power usagde:\n");
-
-    for(double i = 0; i < (*power + *ref)/10; i++ ){
-
-        if(*power >= *ref){
-            if (start > 0){
-                printf("|   |");
-            }
-            if (start2 > 0){
-                printf("            |   |");   
-            }
-            if (start == 0){
-                printf("_____");
-                start++;
-            }
-            if(i >= (*power / 10) - (*ref / 10) && start2 == 0 ){
-                printf("            _____");
-                start2++;
-            }
-            printf("\n");
+    for (int j = 0; j < 2; j++, start++){
+        printf("\n");
+        for(double i = 0; i < *power / 20; i++){
+            printf("__");
         }
-        else if(*power < *ref){
-            if (start > 0){
-                printf("|   |");
-            }
-            if (start2 > 0){
-                printf("         |   |");
-            }
-            if (i >= (*ref / 10) - (*power / 10) && start == 0){
-                printf("_____");
-                start++;
-            }
-
-            if(start2 == 0 ){
-                printf("           _____");
-                start2++;
-            }
-            printf("\n");
+        
+        if (start == 1){
+            printf("|");
         }
     }
+
+    printf("\n\n");
+
+    for (int n = 0; n < 2; n++, start2 ++){
+        printf("\n");
+        for(double i = 0; i < *ref / 20; i++){
+          printf("__");
+        }
+        if(start2 == 1){
+            printf("|");
+        }
+    }
+
 }
 /* Stor på a, lille på b, hvis du går efter percent af
 Og omvent hvis du går efter hvor meget b er større end a */
