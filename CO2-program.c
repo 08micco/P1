@@ -46,7 +46,7 @@ int main(void)
     user_profile user;
     user_profile general;
 
-    initialize_user_profile(user_profile);
+    initialize_user_profile(user);
     appliance plug[PLUGS_MAX];
 
     compareFunction(user, general, higher_consumption);
