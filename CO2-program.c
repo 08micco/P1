@@ -36,7 +36,7 @@ typedef struct user_profile user_profile;
 appliance add_plug(appliance);
 double percent(double, double);
 double total_consumption (appliance plug);
-void bar_chart(double *power, double *ref);
+void bar_chart(appliance plug, double *ref);
 void charts (appliance plug );
 
 int main(void)
@@ -91,7 +91,7 @@ void charts (appliance plug){
         (percent(general_power_consumption, your_total_consumption)));
     }
 
-    bar_chart(&your_total_consumption, &general_power_consumption);
+    bar_chart(plug, &your_total_consumption);
 
 
 
@@ -106,32 +106,13 @@ double total_consumption (appliance plug){
     return tot_con;
 }
 
-void bar_chart (double *power, double *ref){
-    int start = 0, start2 = 0;
-
-    for (int j = 0; j < 2; j++, start++){
+void bar_chart (appliance plug, double *ref){
+    for (int j = 0; j < APPLIANCE_MAX; j++ ){
         printf("\n");
-        for(double i = 0; i < (*power / (*power + *ref)) * 100; i++){
-            printf("__");
-        }
-        
-        if (start == 1){
+        for(double i = 0; i < (plug[j].power_consumption / *ref) * 100 ; i++){
             printf("|");
         }
     }
-
-    printf("\n\n");
-
-    for (int n = 0; n < 2; n++, start2 ++){
-        printf("\n");
-        for(double i = 0; i < (*ref / (*power + *ref)) * 100; i++){
-          printf("__");
-        }
-        if(start2 == 1){
-            printf("|");
-        }
-    }
-
 }
 /* Stor på a, lille på b, hvis du går efter percent af
 Og omvent hvis du går efter hvor meget b er større end a */
