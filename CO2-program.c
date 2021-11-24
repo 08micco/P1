@@ -111,7 +111,7 @@ void bar_chart (double *power, double *ref){
 
     for (int j = 0; j < 2; j++, start++){
         printf("\n");
-        for(double i = 0; i < *power / 20; i++){
+        for(double i = 0; i < (*power / (*power + *ref)) * 100; i++){
             printf("__");
         }
         
@@ -124,7 +124,7 @@ void bar_chart (double *power, double *ref){
 
     for (int n = 0; n < 2; n++, start2 ++){
         printf("\n");
-        for(double i = 0; i < *ref / 20; i++){
+        for(double i = 0; i < (*ref / (*power + *ref)) * 100; i++){
           printf("__");
         }
         if(start2 == 1){
