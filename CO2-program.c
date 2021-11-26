@@ -42,7 +42,7 @@ typedef struct average_profile average_profile;
 
 /* prototypes */
 user_profile initialize_user_profile(user_profile user, int *);
-void add_plug(user_profile, int);
+user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
 void compare_plugs(user_profile, average_profile, appliance *, int);
 void printTips(appliance[PLUGS_MAX], int);
@@ -63,7 +63,7 @@ int main(void)
 
 
     user = initialize_user_profile(user, &amount_of_plugs);
-   
+    amount_of_plugs += 1;
   
     compare_plugs(user, average, above_average_consumption, amount_of_plugs);
     printTips(above_average_consumption, amount_of_plugs);
@@ -90,7 +90,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
 
     while (run && *plug_index < PLUGS_MAX) /* All the kitchen appliances is added to user profile here */
     {
-        add_plug(user, *plug_index);
+        user = add_plug(user, *plug_index);
         print_break();
 
         printf("Add one more appliance?:\n1 | Yes\n2 | No\nSelect option: ");
@@ -111,7 +111,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
 
 
 /* Assigns appliance to plug */
-void add_plug(user_profile user, int plug_index)
+user_profile add_plug(user_profile user, int plug_index)
 {
     printf("Add appliances from the list:\n%d | %s\n%d | %s\n%d | %s\n%d | %s\n%d | %s\nSelect appliance: ",
            microwave, appliances_string[microwave],
@@ -121,6 +121,7 @@ void add_plug(user_profile user, int plug_index)
            freezer, appliances_string[freezer]);
 
     scanf(" %d", &user.plug[plug_index].id); /* Assigns appliance id to the related plug.*/
+    return user;
 }
 
 void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption, int amount_of_plugs)
