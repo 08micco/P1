@@ -7,6 +7,8 @@
 #define APPLIANCE_MAX 6
 #define PLUGS_MAX 10
 
+
+
 enum appliances
 {
     microwave = 1,
@@ -33,6 +35,7 @@ struct user_profile
 };
 typedef struct user_profile user_profile;
 
+
 struct average_profile
 {
     unsigned int household_size;
@@ -48,6 +51,11 @@ void compare_plugs(user_profile, average_profile, appliance *, int);
 void printTips(appliance[PLUGS_MAX], int);
 void print_break(void);
 void write_appliance_data_to_file(FILE *, user_profile);
+double percent(double, double);
+double total_consumption (appliance plug);
+void bar_chart(appliance plug, double *ref);
+void charts (appliance plug );
+
 
 /* Main program */
 int main(void)
@@ -70,6 +78,8 @@ int main(void)
   
   
     write_appliance_data_to_file(data_file, user);
+
+    charts(plug1);
 
     return EXIT_SUCCESS;
 }
@@ -119,6 +129,7 @@ void add_plug(user_profile user, int plug_index)
            oven, appliances_string[oven],
            refrigerator, appliances_string[refrigerator],
            freezer, appliances_string[freezer]);
+
 
     scanf(" %d", &user.plug[plug_index].id); /* Assigns appliance id to the related plug.*/
 }
@@ -239,4 +250,53 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
     fclose(file);
 }
 
+
+
+
+/* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
+
+void charts (appliance plug){
+    double general_power_consumption = 150; //kWh
+    double your_total_consumption = total_consumption(plug);
+    printf("Your total power consumtion %f:\n", your_total_consumption);
+
+    printf("The general powerusaged in Denmark is %f:\n", general_power_consumption);
+
+    if(your_total_consumption > general_power_consumption){
+        printf("You use %f%% more power then the general public\n", 
+        (percent(your_total_consumption, general_power_consumption)));
+    }
+    else {
+        printf("You use %f%% less power then the general public\n",
+        (percent(general_power_consumption, your_total_consumption)));
+    }
+
+    bar_chart(plug, &your_total_consumption);
+
+
+
+}
+
+double total_consumption (appliance plug){
+    double tot_con = 0;
+    for (int i = 0; i < APPLIANCE_MAX; i++){
+        tot_con += plug.power_consumption;
+    }
+
+    return tot_con;
+}
+
+void bar_chart (appliance plug, double *ref){
+    for (int j = 0; j < APPLIANCE_MAX; j++ ){
+        printf("\n");
+        for(double i = 0; i < (plug[j].power_consumption / *ref) * 100 ; i++){
+            printf("|");
+        }
+    }
+}
+/* Stor på a, lille på b, hvis du går efter percent af
+Og omvent hvis du går efter hvor meget b er større end a */
+double percent (double a, double b){
+    return (a / b) * 100;
+}
 
