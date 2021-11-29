@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include "json-c/json.h"
 
 #define APPLIANCE_MAX 6
 #define PLUGS_MAX 10
@@ -52,7 +53,6 @@ void write_appliance_data_to_file(FILE *, user_profile);
 /* Main program */
 int main(void)
 {
-
     FILE *data_file;
 
     appliance above_average_consumption[PLUGS_MAX];
@@ -60,20 +60,16 @@ int main(void)
     average_profile average;
     int amount_of_plugs;
 
-
-
     user = initialize_user_profile(user, &amount_of_plugs);
     amount_of_plugs += 1;
-  
+
     compare_plugs(user, average, above_average_consumption, amount_of_plugs);
     printTips(above_average_consumption, amount_of_plugs);
-  
-  
+
     write_appliance_data_to_file(data_file, user);
 
     return EXIT_SUCCESS;
 }
-
 
 /* User profile informations is set here */
 user_profile initialize_user_profile(user_profile user, int *plug_index)
@@ -82,7 +78,6 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
     printf("Number of peoples: ");
     scanf("%d", &user.household_size);
     print_break();
-
 
     int run = 1;
     int scan_input;
@@ -104,11 +99,10 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
         else
             run = 0;
     }
-  
+
     printf("\nplugs: %d  size %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
     return user;
 }
-
 
 /* Assigns appliance to plug */
 user_profile add_plug(user_profile user, int plug_index)
@@ -196,7 +190,6 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
     }
 }
 
-
 /* Prints tips on areas, where the users consumption is higher than average */
 void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
 {
@@ -211,13 +204,11 @@ void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
     }
 }
 
-
 /* Print a breakline */
 void print_break(void)
 {
     printf("----------------------------------------------------\n");
 }
-
 
 /* This function writes household size, appliance number and their power consumption to a file */
 void write_appliance_data_to_file(FILE *file, user_profile user)
@@ -239,5 +230,3 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
 
     fclose(file);
 }
-
-
