@@ -7,6 +7,8 @@
 
 #define APPLIANCE_MAX 6
 #define PLUGS_MAX 10
+#define KWH_TO_DKK 2.1
+#define KWH_TO_CO2_KG 0.135
 
 enum appliances
 {
@@ -49,6 +51,12 @@ void compare_plugs(user_profile, average_profile, appliance *, appliance *, int)
 void printTips(appliance[PLUGS_MAX], int);
 void print_break(void);
 void write_appliance_data_to_file(FILE *, user_profile);
+double percent(double, double);
+double total_consumption (user_profile, int);
+void bar_chart(user_profile, double *ref, int);
+void charts (user_profile, int );
+double convert_power_to_cash (double *);
+double convert_power_to_CO2(double *);
 
 /* Main program */
 int main(void)
@@ -287,4 +295,67 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
     }
 
     fclose(file);
+}
+
+/* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
+
+void charts (user_profile user, int amount_of_plugs){
+    double general_power_consumption = 150; //kWh
+    /* Det totale strøm forbrug for forbrugeren beregnes og printes. 
+    Den generalle mængde af strømforbrug i danmark printes også*/
+    double your_total_consumption = total_consumption(user, amount_of_plugs);
+    printf("Your total power consumtion %f:\n", your_total_consumption);
+
+    printf("The general powerusaged in Denmark is %f:\n", general_power_consumption);
+
+    if(your_total_consumption > general_power_consumption){
+        printf("You use %f%% more power then the general public\n", 
+        (percent(your_total_consumption, general_power_consumption)));
+    }
+    else {
+        printf("You use %f%% less power then the general public\n",
+        (percent(general_power_consumption, your_total_consumption)));
+    }
+    /* Værdieren fra de forskellige appliances laves som et bar-chart, og viser hvilke appliances der bruger mest strøm*/
+    bar_chart(user, &your_total_consumption, amount_of_plugs);
+
+    printf("You have used %f Kr on power.",convert_power_to_cash(&your_total_consumption));
+
+    printf("You have emittet %f kg of CO2.",convert_power_to_CO2(&your_total_consumption));
+
+
+
+}
+
+double total_consumption (user_profile user, int amount_of_plugs){
+    double tot_con = 0;
+    for (int i = 0; i < amount_of_plugs; i++){
+        tot_con += user.plug[i].power_consumption;
+        printf("%d\n", i);
+    }
+
+    return tot_con;
+}
+
+void bar_chart (user_profile user, double *ref, int amount_of_plugs){
+    for (int j = 0; j < amount_of_plugs; j++ ){
+        printf("\n\n");
+        for(double i = 0; i < (user.plug[j].power_consumption / *ref) * 100 ; i++){
+            printf("|");
+        }
+    }
+}
+/* Stor på a, lille på b, hvis du går efter percent af
+Og omvent hvis du går efter hvor meget b er større end a */
+double percent (double a, double b){
+    return (a / b) * 100;
+}
+/* Har en kilde på KWH_TO_DKK konstanten */
+double convert_power_to_cash (double *power){
+    return *power * KWH_TO_DKK;
+}
+
+/* Bliver beregnet i kg. Har også en kilde på det.  */
+double convert_power_to_CO2(double *power){
+    return *power * KWH_TO_CO2_KG;
 }
