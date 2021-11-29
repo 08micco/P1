@@ -45,7 +45,7 @@ typedef struct average_profile average_profile;
 user_profile initialize_user_profile(user_profile user, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
-void compare_plugs(user_profile, average_profile, appliance *, int);
+void compare_plugs(user_profile, average_profile, appliance *, appliance *, int);
 void printTips(appliance[PLUGS_MAX], int);
 void print_break(void);
 void write_appliance_data_to_file(FILE *, user_profile);
@@ -56,14 +56,27 @@ int main(void)
     FILE *data_file;
 
     appliance above_average_consumption[PLUGS_MAX];
+    appliance below_average_comsumption[PLUGS_MAX];
     user_profile user;
     average_profile average;
     int amount_of_plugs;
 
+    int i;
+    for (i = 0; i < 5; i++)
+    {
+        user.plug[i].power_consumption = 100 + 10 * i;
+        average.appliances[i].power_consumption = 90 + 25 * i;
+    }
+
     user = initialize_user_profile(user, &amount_of_plugs);
     amount_of_plugs += 1;
 
-    compare_plugs(user, average, above_average_consumption, amount_of_plugs);
+    for (int i = 0; i < amount_of_plugs; i++)
+    {
+        printf("Her er id'et for %d lig med %d\n", i, user.plug[i].id);
+    }
+
+    compare_plugs(user, average, above_average_consumption, below_average_comsumption, amount_of_plugs);
     printTips(above_average_consumption, amount_of_plugs);
 
     write_appliance_data_to_file(data_file, user);
@@ -75,13 +88,13 @@ int main(void)
 user_profile initialize_user_profile(user_profile user, int *plug_index)
 {
     printf("What is the size of the household?\n"); /* Scan for household size to the user*/
-    printf("Number of peoples: ");
+    printf("Number of people: ");
     scanf("%d", &user.household_size);
     print_break();
 
     int run = 1;
     int scan_input;
-    *plug_index = 1;
+    *plug_index = 0;
 
     while (run && *plug_index < PLUGS_MAX) /* All the kitchen appliances is added to user profile here */
     {
@@ -100,7 +113,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
             run = 0;
     }
 
-    printf("\nplugs: %d  size %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    printf("\nplugs: %d  Householdsize %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
     return user;
 }
 
@@ -118,65 +131,110 @@ user_profile add_plug(user_profile user, int plug_index)
     return user;
 }
 
-void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption, int amount_of_plugs)
+void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption,
+                   appliance *below_average_comsumtion, int amount_of_plugs)
 {
+    printf("vi er inde i compare funktionen: ");
     int i;
-    int count = 1;
+    int count_above = 1, count_below = 1;
     int temp_appliance;
-    for (i = 1; i < amount_of_plugs; i++)
+    for (i = 0; i < amount_of_plugs; i++)
     {
         switch (user.plug[i].id)
         {
         case microwave:
+            printf("case: microwave. ");
             if (user.plug[i].power_consumption > average.appliances[microwave].power_consumption)
             {
-                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
-                above_average_consumption[count].id = microwave;
-                count++;
-                temp_appliance = microwave;
+                above_average_consumption[count_above].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count_above].id = microwave;
+                count_above++;
+                printf("inde i if-statement. \n");
             }
+            else
+            {
+                below_average_comsumtion[count_below].power_consumption = user.plug[i].power_consumption;
+                below_average_comsumtion[count_below].id = microwave;
+                count_below++;
+                printf(" inde i else-statement. \n");
+            }
+            temp_appliance = microwave;
             break;
 
         case kettle:
+            printf("case: microwave. ");
             if (user.plug[i].power_consumption > average.appliances[kettle].power_consumption)
             {
-                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
-                above_average_consumption[count].id = kettle;
-                count++;
-                temp_appliance = kettle;
+                above_average_consumption[count_above].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count_above].id = kettle;
+                count_above++;
+                printf("inde i if-statement. \n");
             }
+            else
+            {
+                below_average_comsumtion[count_below].power_consumption = user.plug[i].power_consumption;
+                below_average_comsumtion[count_below].id = kettle;
+                count_below++;
+                printf(" inde i else-statement. \n");
+            }
+            temp_appliance = kettle;
             break;
 
         case oven:
+            printf("case: microwave. ");
             if (user.plug[i].power_consumption > average.appliances[oven].power_consumption)
             {
-                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
-                above_average_consumption[count].id = oven;
-                count++;
-                temp_appliance = oven;
+                above_average_consumption[count_above].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count_above].id = oven;
+                count_above++;
+                printf("inde i if-statement. \n");
             }
             else
-
-                break;
+            {
+                below_average_comsumtion[count_below].power_consumption = user.plug[i].power_consumption;
+                below_average_comsumtion[count_below].id = oven;
+                count_below++;
+                printf(" inde i else-statement. \n");
+            }
+            temp_appliance = oven;
+            break;
 
         case refrigerator:
+            printf("case: microwave. ");
             if (user.plug[i].power_consumption > average.appliances[refrigerator].power_consumption)
             {
-                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
-                above_average_consumption[count].id = refrigerator;
-                count++;
-                temp_appliance = refrigerator;
+                above_average_consumption[count_above].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count_above].id = refrigerator;
+                count_above++;
+                printf("inde i if-statement. \n");
             }
+            else
+            {
+                below_average_comsumtion[count_below].power_consumption = user.plug[i].power_consumption;
+                below_average_comsumtion[count_below].id = refrigerator;
+                count_below++;
+                printf(" inde i else-statement. \n");
+            }
+            temp_appliance = refrigerator;
             break;
 
         case freezer:
+            printf("case: microwave. ");
             if (user.plug[i].power_consumption > average.appliances[freezer].power_consumption)
             {
-                above_average_consumption[count].power_consumption = user.plug[i].power_consumption;
-                above_average_consumption[count].id = freezer;
-                count++;
-                temp_appliance = freezer;
+                above_average_consumption[count_above].power_consumption = user.plug[i].power_consumption;
+                above_average_consumption[count_above].id = freezer;
+                count_above++;
+                printf("inde i if-statement. \n");
             }
+            else
+            {
+                below_average_comsumtion[count_below].power_consumption = user.plug[i].power_consumption;
+                below_average_comsumtion[count_below].id = freezer;
+                count_below++;
+                printf(" inde i else-statement. \n");
+            }
+            temp_appliance = freezer;
             break;
 
         default:
@@ -194,10 +252,10 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
 void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
 {
     char *tips[APPLIANCE_MAX] = {"empty", "dont boil too much water", "and so on..."};
-    int i;
 
     printf("\nYou need to improve on the following appliances: \n");
 
+    int i;
     for (i = 1; i < amount_of_plugs; i++)
     {
         printf("Tip number %d: %s, is %s \n", i, appliances_string[list_of_appliances->id], tips[list_of_appliances->id]);
