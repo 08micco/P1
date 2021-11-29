@@ -5,10 +5,11 @@
 #include <time.h>
 #include "json-c/json.h"
 
-#define APPLIANCE_MAX 6
-#define PLUGS_MAX 10
-#define KWH_TO_DKK 2.1
-#define KWH_TO_CO2_KG 0.135
+#define APPLIANCE_MAX 6 /* Amount of appliances the system knows */
+#define PLUGS_MAX 10 /* Max amount of plugs in the system */
+#define KWH_TO_DKK 2.3 /* Price for 1 kWh in DKK */
+#define KWH_TO_CO2_G 122 /* CO2 g emmission pr 1 kWh production */
+#define KWH_TO_CO2_KG (KWH_TO_CO2_G/1000) /* CO2 kg emmission pr 1 kWh production */
 
 enum appliances
 {
