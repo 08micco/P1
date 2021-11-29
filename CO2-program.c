@@ -193,15 +193,43 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
 /* Prints tips on areas, where the users consumption is higher than average */
 void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
 {
-    char *tips[APPLIANCE_MAX] = {"empty", "dont boil too much water", "and so on..."};
-    int i;
+    /* Arrays all individual appliance-tips, as well as one for general tips.  */
+    char *tips_microwave[APPLIANCE_MAX] = {"Only use the microwave for smaller meals."};
+    char *tips_kettle[APPLIANCE_MAX] = {"Make sure you dont boil more water than needed."};
+    char *tips_oven[APPLIANCE_MAX] = {"Make use of the ovens pre- and postheat to cook your meals.", "Only use the oven for bigger meals."};
+    char *tips_refridgerator[APPLIANCE_MAX] = {"Thaw frozen food in the refridgerator to help it keep.", ""};
+    char *tips_freezer[APPLIANCE_MAX] = {"Remove frost from the freezers' surfaces."};
+    char *tips_general[APPLIANCE_MAX] = {"Make sure appliances, pots and more is properly sealed, as to not waste the heat or cold."};
+    int i, ekstra, amount_of_low_plugs, amount_of_high_plugs; /* low og high er placeholders som erstattes senere. */
 
-    printf("\nYou need to improve on the following appliances: \n");
+    /* Lav et loop der printer tips ud til antallet af plugs der går over gennemsnittet. */
 
+    printf("\nYou have an above-average consumption on these applainces: \n");
+    for (i = 1; i < amount_of_high_plugs; i++)
+    {
+        printf("Appliance nr. 1: %s is above average", list_of_appliances[i]);
+    }
+
+    /* A loop that will dispense tips for amount_of_plugs times, for the relevant appliances. */
     for (i = 1; i < amount_of_plugs; i++)
     {
-        printf("Tip number %d: %s, is %s \n", i, appliances_string[list_of_appliances->id], tips[list_of_appliances->id]);
+        printf("Tip number %d:  for %s, is %s \n", i, appliances_string[i], tips_microwave[list_of_appliances->id] /* Placeholder */);
     }
+
+    /* Giving the user the option to see tips for appliances that aren't consuming more than average. */
+    printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
+    scanf("%d", ekstra);
+
+    /* If the user wishes to see the ekstra tips, a loop printing the ekstra tips for the amount of plugs that aren't higher than average consumption. */
+    if (ekstra == 1)
+    {
+        for (i = 1; i < amount_of_low_plugs; i++)
+        {
+            printf("\nTip nr. %d: For %s, is %s", i, appliances_string[i], tips_kettle[list_of_appliances->id] /* Placeholder */);
+        }
+    }
+
+    // Gør det muligt at brugeren kan spørge efter tips på de plugs som brugeren ikke have et overforbrug af.
 }
 
 /* Print a breakline */
