@@ -1,8 +1,8 @@
-Household size: 5
-Appliance: -1339967524, Power Consumption: 0.000000
-Appliance: 7620672, Power Consumption: 0.000000
-Appliance: 268501009, Power Consumption: 0.000000
-Appliance: -1340036362, Power Consumption: 0.000000
-Appliance: 0, Power Consumption: 0.000000
-Appliance: 8, Power Consumption: 0.000000
-Appliance: 5, Power Consumption: 0.000000
+Household size: 423
+Appliance: 1, Power Consumption: 6.000000
+Appliance: 2, Power Consumption: 7.000000
+Appliance: 3, Power Consumption: 8.000000
+Appliance: 4, Power Consumption: 9.000000
+Appliance: 5, Power Consumption: 10.000000
+Appliance: 1034, Power Consumption: 0.000000
+Appliance: 6422476, Power Consumption: -0.000000
