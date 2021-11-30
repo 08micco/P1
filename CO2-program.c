@@ -21,7 +21,7 @@ enum appliances
 };
 typedef enum appliances appliances;
 
-char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "coffee machine"};
+char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "Coffee machine"};
 
 struct appliance
 {
@@ -50,7 +50,8 @@ user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
 void compare_plugs(user_profile, average_profile, appliance *, appliance *, int, int *, int *);
 void print_percentage_of_average(int, double, double);
-void printTips(appliance[PLUGS_MAX], int);
+void printTips(appliance *, appliance *, int, int);
+void printSwitch(int, appliance);
 void print_break(void);
 void write_appliance_data_to_file(FILE *, user_profile);
 double percent(double, double);
@@ -281,6 +282,7 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
     print_break();
 }
 
+
 /* Prints percentage of average */
 void print_percentage_of_average(int app, double user_cons, double average_cons)
 {
@@ -289,17 +291,60 @@ void print_percentage_of_average(int app, double user_cons, double average_cons)
     print_break();
 }
 
+
+/*---------------------------------------------------------------------------------------------------------------------------------------*/
+
 /* Prints tips on areas, where the users consumption is higher than average */
-void printTips(appliance list_of_appliances[PLUGS_MAX], int amount_of_plugs)
-{
-    char *tips[APPLIANCE_MAX] = {"empty", "dont boil too much water", "and so on..."};
+void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_below, int index_above)
+{    
+    int i, userWantExtra;
 
-    printf("\nYou need to improve on the following appliances: \n");
+    printSwitch(index_above, above_average_consumption);
 
+    printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
+    scanf("%d", userWantExtra);
+    if (userWantExtra == 1)
+    {
+        printSwitch(index_below, below_average_consumption);
+    }
+}
+
+void printSwitch(int amount_of_plugs, appliance consumption[]) {
     int i;
+    char tips_microwave[100] = "Only use the microwave for smaller meals.\n";
+    char tips_kettle[100] = "Make sure you dont boil more water than needed.\n";
+    char tips_oven[100] = "Make use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
+    char tips_refridgerator[100] = "Thaw frozen food in the refridgerator to help it keep.\n";
+    char tips_freezer[100] = "Remove frost from the freezers' surfaces.\n";
+    char tips_general[100] = "Make sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
+
     for (i = 1; i < amount_of_plugs; i++)
     {
-        printf("Tip number %d: %s, is %s \n", i, appliances_string[list_of_appliances->id], tips[list_of_appliances->id]);
+        switch (consumption[i].id)
+        {
+        case microwave:
+            printf("%s\n", tips_microwave);
+            break;
+
+        case kettle:
+            printf("%s\n", tips_kettle);
+            break;
+
+        case oven:
+            printf("%s\n", tips_oven);
+            break;
+
+        case refrigerator:
+            printf("%s\n", tips_refridgerator);
+            break;
+
+        case coffee:
+            printf("%s\n", tips_freezer);
+            break;
+
+        default:
+            printf("Me want corny delight!\n");
+        }
     }
 }
 
@@ -334,8 +379,11 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
 
 void charts(user_profile user, int amount_of_plugs)
 {
-    double general_power_consumption = 150; //kWh
-    /* Det totale strøm forbrug for forbrugeren beregnes og printes. 
+
+
+    double general_power_consumption = 150; // kWh
+    /* Det totale strøm forbrug for forbrugeren beregnes og printes.
+
     Den generalle mængde af strømforbrug i danmark printes også*/
     double your_total_consumption = total_consumption(user, amount_of_plugs);
     printf("Your total power consumtion %f:\n", your_total_consumption);
