@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include "json-c/json.h"
 
 #define APPLIANCE_MAX 6                     /* Amount of appliances the system knows */
 #define PLUGS_MAX 10                        /* Max amount of plugs in the system */
@@ -386,6 +385,7 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
 
 void charts(user_profile user, int amount_of_plugs)
 {
+
     /* fucking ligegyldig */
     printf("Her er lasses funktion\n\n");
 
