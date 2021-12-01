@@ -3,6 +3,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
+#include "json-parser-master/json.c"
 
 #define APPLIANCE_MAX 6
 #define PLUGS_MAX 10
