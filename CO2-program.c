@@ -300,6 +300,7 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
 {
     int i, userWantExtra;
 
+    /* Function for printing out all the instances where the appliances are above average in consumption. */
     printSwitch(index_above, above_average_consumption);
 
     print_break();
