@@ -1,0 +1,59 @@
+{
+    "household_size": 2,
+    "26/11/2021": {
+        "appliance1": {
+            "appliance-id": 1,
+            "power_consumption": 10
+        },
+        "appliance2": {
+            "appliance-id": 2,
+            "power_consumption": 20
+        },
+        "appliance3": {
+            "appliance-id": 3,
+            "power_consumption": 30
+        }
+    },
+    "27/11/2021": {
+        "appliance1": {
+            "appliance-id": 1,
+            "power_consumption": 10
+        },
+        "appliance2": {
+            "appliance-id": 2,
+            "power_consumption": 20
+        },
+        "appliance3": {
+            "appliance-id": 3,
+            "power_consumption": 30
+        }
+    },
+    "28/11/2021": {
+        "appliance1": {
+            "appliance-id": 1,
+            "power_consumption": 10
+        },
+        "appliance2": {
+            "appliance-id": 2,
+            "power_consumption": 20
+        },
+        "appliance3": {
+            "appliance-id": 3,
+            "power_consumption": 30
+        }
+    },
+    "29/11/2021": {
+        "appliance1": {
+            "appliance-id": 1,
+            "power_consumption": 10
+        },
+        "appliance2": {
+            "appliance-id": 2,
+            "power_consumption": 20
+        },
+        "appliance3": {
+            "appliance-id": 3,
+            "power_consumption": 30
+        }
+    }
+}
