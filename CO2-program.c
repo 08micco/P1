@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include "json-c/json.h"
 
 #define APPLIANCE_MAX 6                     /* Amount of appliances the system knows */
 #define PLUGS_MAX 10                        /* Max amount of plugs in the system */
@@ -158,7 +157,7 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
 
     for (i = 0; i < amount_of_plugs; i++)
     {
-        /* average.appliances[] is a sorted array that is constant, while user.plug[] depends on the order in which the use assign plugs to appliances. 
+        /* average.appliances[] is a sorted array that is constant, while user.plug[] depends on the order in which the use assign plugs to appliances.
         This switch compares the according power consumptions from the two arrays*/
         switch (user.plug[i].id)
         {
@@ -282,7 +281,6 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
     print_break();
 }
 
-
 /* Prints percentage of average */
 void print_percentage_of_average(int app, double user_cons, double average_cons)
 {
@@ -291,12 +289,11 @@ void print_percentage_of_average(int app, double user_cons, double average_cons)
     print_break();
 }
 
-
 /*---------------------------------------------------------------------------------------------------------------------------------------*/
 
 /* Prints tips on areas, where the users consumption is higher than average */
 void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_below, int index_above)
-{    
+{
     int i, userWantExtra;
 
     printSwitch(index_above, above_average_consumption);
@@ -309,7 +306,8 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
     }
 }
 
-void printSwitch(int amount_of_plugs, appliance consumption[]) {
+void printSwitch(int amount_of_plugs, appliance consumption[])
+{
     int i;
     char tips_microwave[100] = "Only use the microwave for smaller meals.\n";
     char tips_kettle[100] = "Make sure you dont boil more water than needed.\n";
@@ -379,7 +377,6 @@ void write_appliance_data_to_file(FILE *file, user_profile user)
 
 void charts(user_profile user, int amount_of_plugs)
 {
-
 
     double general_power_consumption = 150; // kWh
     /* Det totale strøm forbrug for forbrugeren beregnes og printes.
