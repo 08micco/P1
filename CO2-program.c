@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include "Charts.h"
+/* #include "Charts.h" */
 
 #define APPLIANCE_MAX 6                     /* Amount of appliances the system knows */
 #define PLUGS_MAX 10                        /* Max amount of plugs in the system */
@@ -48,8 +48,8 @@ typedef struct average_profile average_profile;
 user_profile initialize_user_profile(user_profile user, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
-void place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void compare_plugs(user_profile, average_profile, appliance *, appliance *, int, int *, int *);
+int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, double, double);
 void printTips(appliance[], appliance[], int, int);
 void printSwitch(int, appliance[]);
@@ -97,7 +97,7 @@ int main(void)
     compare_plugs(user, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
     printTips(above_average_consumption, below_average_consumption, index_above, index_below);
 
-    charts(user, amount_of_plugs);
+    /* charts(user, amount_of_plugs); */
 
     write_appliance_data_to_file(data_file, user);
 
@@ -360,6 +360,30 @@ void charts(user_profile user, int amount_of_plugs)
     printf("\n\nYou have used %f Kr on power.", convert_power_to_cash(&your_total_consumption));
 
     printf("You have emittet %f kg of CO2.", convert_power_to_CO2(&your_total_consumption));
+}
+
+double total_consumption(user_profile user, int amount_of_plugs)
+{
+    double tot_con = 0;
+    for (int i = 0; i < amount_of_plugs; i++)
+    {
+        tot_con += user.plug[i].power_consumption;
+        printf("%d\n", i);
+    }
+
+    return tot_con;
+}
+
+void bar_chart(user_profile user, double *ref, int amount_of_plugs)
+{
+    for (int j = 0; j < amount_of_plugs; j++)
+    {
+        printf("\n\n");
+        for (double i = 0; i < (user.plug[j].power_consumption / *ref) * 100; i++)
+        {
+            printf("|");
+        }
+    }
 }
 
 /* Stor på a, lille på b, hvis du går efter percent af
