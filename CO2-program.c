@@ -45,14 +45,14 @@ struct average_profile
 typedef struct average_profile average_profile;
 
 /* prototypes */
-user_profile initialize_user_profile(user_profile user, int *);
+user_profile initialize_user_profile(user_profile, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
 void compare_plugs(user_profile, average_profile, appliance *, appliance *, int, int *, int *);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, double, double);
-void printTips(appliance[], appliance[], int, int);
-void printSwitch(appliance[], int);
+void print_tips(appliance[], appliance[], int, int);
+void print_switch(appliance[], int);
 void print_break(void);
 double percent(double, double);
 double total_consumption(user_profile, int);
@@ -85,14 +85,8 @@ int main(void)
     user = initialize_user_profile(user, &amount_of_plugs);
     amount_of_plugs += 1;
 
-    for (i = 0; i < amount_of_plugs; i++)
-        printf("Her er id'et for plug[%d] lig med %d\n", i, user.plug[i].id);
-    print_break();
-
-    printf("index is here %d\n", index_above);
-
     compare_plugs(user, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
-    printTips(above_average_consumption, below_average_consumption, index_above, index_below);
+    print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
 
     charts(user, amount_of_plugs);
 
@@ -127,7 +121,8 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
             run = 0;
     }
 
-    printf("\nplugs: %d  Householdsize %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    printf("\nplugs: %d  Size of household %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    print_break();
     return user;
 }
 
@@ -153,64 +148,51 @@ user_profile add_plug(user_profile user, int plug_index)
 void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption,
                    appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below)
 {
+    int current_appliance;
     int i;
-    int temp_appliance;
-
-    printf("vi er inde i compare funktionen: \n");
-
     for (i = 0; i < amount_of_plugs; i++)
     {
-        /* this function places every */
+        /* this switch-case is sorted after the id of the users plugs.
+        current_appliances is signed the int value of the current case. E.g. in case microwave: current_appliances is assigned microwave */
         switch (user.plug[i].id)
         {
         case microwave:
-            temp_appliance = place_in_correct_array(microwave, user.plug[i].power_consumption, average.appliances[microwave].power_consumption,
-                                                    above_average_consumption, below_average_consumption, &index_above, &index_below);
+            current_appliance = place_in_correct_array(microwave, user.plug[i].power_consumption, average.appliances[microwave].power_consumption,
+                                                       above_average_consumption, below_average_consumption, &index_above, &index_below);
             break;
 
         case kettle:
-            temp_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
-                                                    above_average_consumption, below_average_consumption, &index_above, &index_below);
+            current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
+                                                       above_average_consumption, below_average_consumption, &index_above, &index_below);
             break;
 
         case oven:
-            temp_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
-                                                    above_average_consumption, below_average_consumption, &index_above, &index_below);
+            current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
+                                                       above_average_consumption, below_average_consumption, &index_above, &index_below);
             break;
 
         case refrigerator:
-            temp_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
-                                                    above_average_consumption, below_average_consumption, &index_above, &index_below);
+            current_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
+                                                       above_average_consumption, below_average_consumption, &index_above, &index_below);
             break;
 
         case coffee:
-            temp_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
-                                                    above_average_consumption, below_average_consumption, &index_above, &index_below);
+            current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
+                                                       above_average_consumption, below_average_consumption, &index_above, &index_below);
             break;
 
         default:
             printf("\n\nPool mig på Eddies\n\n");
         }
 
-        print_percentage_of_average(temp_appliance, user.plug[i].power_consumption, average.appliances[temp_appliance].power_consumption);
+        print_percentage_of_average(current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
     }
 
-    print_break();
-
-    printf("Index above er %d\n", *index_above);
-
-    /* sladeskank */
-    for (i = 0; i < *index_above; i++)
-        printf("For above average consumption: above-average-consumption[%d].id is %d\n", i, above_average_consumption[i].id);
-    print_break();
-    for (i = 0; i < *index_below; i++)
-        printf("For below average consumption: below-average-consumption[%d].id is %d\n", i, below_average_consumption[i].id);
-    print_break();
     print_break();
 }
 
 /* if the user power consumtion is higher than the average for that appliance,
-it is placed into the array called above_average_consumtion. Otherwise  */
+it is placed into the array called above_average_consumtion. Otherwise places in below_average_consumption */
 int place_in_correct_array(int id, double user_con, double average_con, appliance *above_average_consumption,
                            appliance *below_average_consumption, int **index_above, int **index_below)
 {
@@ -219,19 +201,18 @@ int place_in_correct_array(int id, double user_con, double average_con, applianc
         above_average_consumption[**index_above].power_consumption = user_con;
         above_average_consumption[**index_above].id = id;
         (**index_above)++;
-        printf("inde i if-statement. \n");
     }
     else
     {
         below_average_consumption[**index_below].power_consumption = user_con;
         below_average_consumption[**index_below].id = id;
         (**index_below)++;
-        printf("inde i else-statement. \n");
     }
+
     return id;
 }
 
-/* Prints percentage of average */
+/* Prints percentage of average consumption.*/
 void print_percentage_of_average(int app, double user_cons, double average_cons)
 {
     printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[app],
@@ -239,27 +220,27 @@ void print_percentage_of_average(int app, double user_cons, double average_cons)
 }
 
 /* Prints tips on areas, where the users consumption is higher than average */
-void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_above, int index_below)
+void print_tips(appliance above_average_consumption[], appliance below_average_consumption[], int index_above, int index_below)
 {
     int user_want_extra;
 
     /* Function for printing out all the instances where the appliances are above average in consumption. */
-    printf("index above is %d, while index below is %d\n", index_above, index_below);
-    printSwitch(above_average_consumption, index_above);
+    print_switch(above_average_consumption, index_above);
 
     print_break();
 
     printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
     scanf("%d", &user_want_extra);
+    print_break();
     if (user_want_extra == 1)
     {
-        printSwitch(below_average_consumption, index_below);
+        print_switch(below_average_consumption, index_below);
     }
 
     print_break();
 }
 
-void printSwitch(appliance consumption[], int amount)
+void print_switch(appliance consumption[], int amount)
 {
     int i;
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
@@ -367,6 +348,7 @@ double percent(double a, double b)
 {
     return (a / b) * 100;
 }
+
 /* Har en kilde på KWH_TO_DKK konstanten */
 double convert_power_to_cash(double power)
 {
