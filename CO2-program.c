@@ -287,6 +287,7 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
 {    
     int i, userWantExtra;
 
+    /* Function for printing out all the instances where the appliances are above average in consumption. */
     printSwitch(index_above, above_average_consumption);
 
     printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
