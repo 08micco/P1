@@ -5,11 +5,11 @@
 #include <time.h>
 /* #include "Charts.h" */
 
-#define APPLIANCE_MAX 6                     /* Amount of appliances the system knows */
-#define PLUGS_MAX 10                        /* Max amount of plugs in the system */
-#define KWH_TO_DKK 2.3                      /* Price for 1 kWh in DKK */
-#define KWH_TO_CO2_G 122                    /* CO2 g emmission pr 1 kWh production */
-#define KWH_TO_CO2_KG (KWH_TO_CO2_G / 1000) /* CO2 kg emmission pr 1 kWh production */
+#define APPLIANCE_MAX 6                   /* Amount of appliances the system knows */
+#define PLUGS_MAX 10                      /* Max amount of plugs in the system */
+#define KWH_TO_DKK 2.3                    /* Price for 1 kWh in DKK */
+#define KWH_TO_CO2_G 122                  /* CO2 g emmission pr 1 kWh production */
+#define KWH_TO_CO2_KG KWH_TO_CO2_G / 1000 /* CO2 kg emmission pr 1 kWh production */
 
 enum appliances
 {
@@ -52,27 +52,24 @@ void compare_plugs(user_profile, average_profile, appliance *, appliance *, int,
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, double, double);
 void printTips(appliance[], appliance[], int, int);
-void printSwitch(int, appliance[]);
+void printSwitch(appliance[], int);
 void print_break(void);
-void write_appliance_data_to_file(FILE *, user_profile);
 double percent(double, double);
 double total_consumption(user_profile, int);
-void bar_chart(user_profile, double *ref, int);
+void bar_chart(user_profile, double, int);
 void charts(user_profile, int);
-double convert_power_to_cash(double *);
-double convert_power_to_CO2(double *);
+double convert_power_to_cash(double);
+double convert_power_to_CO2(double);
 
 /* Main program */
 int main(void)
 {
-    FILE *data_file;
-
     appliance above_average_consumption[PLUGS_MAX];
     appliance below_average_consumption[PLUGS_MAX];
     int index_above = 0, index_below = 0;
     user_profile user;
     average_profile average;
-    int amount_of_plugs;
+    int amount_of_plugs = 0;
 
     int i;
     for (i = 0; i < 5; i++) /* Test. Skal slettes når json virker */
@@ -88,7 +85,7 @@ int main(void)
     user = initialize_user_profile(user, &amount_of_plugs);
     amount_of_plugs += 1;
 
-    for (int i = 0; i < amount_of_plugs; i++)
+    for (i = 0; i < amount_of_plugs; i++)
         printf("Her er id'et for plug[%d] lig med %d\n", i, user.plug[i].id);
     print_break();
 
@@ -97,9 +94,7 @@ int main(void)
     compare_plugs(user, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
     printTips(above_average_consumption, below_average_consumption, index_above, index_below);
 
-    /* charts(user, amount_of_plugs); */
-
-    write_appliance_data_to_file(data_file, user);
+    charts(user, amount_of_plugs);
 
     return EXIT_SUCCESS;
 }
@@ -107,14 +102,13 @@ int main(void)
 /* User profile informations is set here */
 user_profile initialize_user_profile(user_profile user, int *plug_index)
 {
+    int run = 1;
+    int scan_input;
+
     printf("What is the size of the household?\n"); /* Scan for household size to the user*/
     printf("Number of people: ");
     scanf("%d", &user.household_size);
     print_break();
-
-    int run = 1;
-    int scan_input;
-    *plug_index = 0;
 
     while (run && *plug_index < PLUGS_MAX) /* All the kitchen appliances is added to user profile here */
     {
@@ -140,6 +134,8 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
 /* Assigns appliance to plug */
 user_profile add_plug(user_profile user, int plug_index)
 {
+    int plug_id;
+
     printf("Add appliances from the list:\n%d | %s\n%d | %s\n%d | %s\n%d | %s\n%d | %s\nSelect appliance: ",
            microwave, appliances_string[microwave],
            kettle, appliances_string[kettle],
@@ -147,7 +143,9 @@ user_profile add_plug(user_profile user, int plug_index)
            refrigerator, appliances_string[refrigerator],
            coffee, appliances_string[coffee]);
 
-    scanf(" %d", &user.plug[plug_index].id); /* Assigns appliance id to the related plug.*/
+    scanf(" %d", &plug_id);                         /* Assigns appliance id to the related plug.*/
+    user.plug[plug_index].id = (appliances)plug_id; /* Typecast magic */
+
     return user;
 }
 
@@ -155,9 +153,10 @@ user_profile add_plug(user_profile user, int plug_index)
 void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption,
                    appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below)
 {
-    printf("vi er inde i compare funktionen: \n");
     int i;
     int temp_appliance;
+
+    printf("vi er inde i compare funktionen: \n");
 
     for (i = 0; i < amount_of_plugs; i++)
     {
@@ -237,16 +236,16 @@ void print_percentage_of_average(int app, double user_cons, double average_cons)
 {
     printf("Consumption of your %s is %.2lf%% of the average.\n", appliances_string[app],
            percent(user_cons, average_cons));
-    print_break();
 }
 
 /* Prints tips on areas, where the users consumption is higher than average */
-void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_below, int index_above)
+void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_above, int index_below)
 {
-    int i, user_want_extra;
+    int user_want_extra;
 
     /* Function for printing out all the instances where the appliances are above average in consumption. */
-    printSwitch(index_above, above_average_consumption);
+    printf("index above is %d, while index below is %d\n", index_above, index_below);
+    printSwitch(above_average_consumption, index_above);
 
     print_break();
 
@@ -254,23 +253,23 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
     scanf("%d", &user_want_extra);
     if (user_want_extra == 1)
     {
-        printSwitch(index_below, below_average_consumption);
+        printSwitch(below_average_consumption, index_below);
     }
 
     print_break();
 }
 
-void printSwitch(int amount_of_plugs, appliance consumption[])
+void printSwitch(appliance consumption[], int amount)
 {
     int i;
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
-    char tips_kettle[500] = "Kettle:\nMake sure you dont boil more water than needed.\n";
+    char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
     char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
-    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep.\n";
-    char tips_coffee[500] = "Coffee Machine:\nDont make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
-    char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
+    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
+    char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
+    /* char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n"; */
 
-    for (i = 0; i < amount_of_plugs; i++)
+    for (i = 0; i < amount; i++)
     {
         switch (consumption[i].id)
         {
@@ -303,83 +302,59 @@ void printSwitch(int amount_of_plugs, appliance consumption[])
 /* Print a breakline */
 void print_break(void)
 {
-    printf("----------------------------------------------------\n");
-}
-
-/* This function writes household size, appliance number and their power consumption to a file */
-void write_appliance_data_to_file(FILE *file, user_profile user)
-{
-    int i;
-    file = fopen("data/test.txt", "w+");
-
-    if (file == NULL)
-    {
-        printf("\nError while creating file\n");
-        exit(1);
-    }
-
-    fprintf(file, "Household size: %d\n", user.household_size);
-    for (i = 0; i <= APPLIANCE_MAX; i++)
-    {
-        fprintf(file, "Appliance: %d, Power Consumption: %f\n", user.plug[i].id, user.plug[i].power_consumption);
-    }
-
-    fclose(file);
+    printf("------------------------------------------------------------------------------------------------\n");
 }
 
 /* general_power_consumption skal være den gennemsnitlige strømmængde brugt af danske køkkner*/
-
 void charts(user_profile user, int amount_of_plugs)
 {
+    double general_power_consumption = 150; /* kWh
+    Det totale strøm forbrug for forbrugeren beregnes og printes. */
 
-    /* fucking ligegyldig */
-    printf("Her er lasses funktion\n\n");
-
-    double general_power_consumption = 150; // kWh
-    /* Det totale strøm forbrug for forbrugeren beregnes og printes.
-
-    Den generalle mængde af strømforbrug i danmark printes også*/
+    /* Den generalle mængde af strømforbrug i danmark printes også*/
     double your_total_consumption = total_consumption(user, amount_of_plugs);
-    printf("Your total power consumtion %f:\n", your_total_consumption);
+    printf("Your total power consumtion %.2f:\n", your_total_consumption);
 
-    printf("The general power usage in Denmark is %f:\n", general_power_consumption);
+    printf("The general power usage in Denmark is %.2f:\n", general_power_consumption);
 
     if (your_total_consumption > general_power_consumption)
     {
-        printf("You use %f%% more power then the general public\n",
+        printf("You use %.2f%% more power then the general public\n",
                (percent(your_total_consumption, general_power_consumption)));
     }
     else
     {
-        printf("You use %f%% less power then the general public\n",
+        printf("You use %.2f%% less power then the general public\n",
                (percent(general_power_consumption, your_total_consumption)));
     }
     /* Værdieren fra de forskellige appliances laves som et bar-chart, og viser hvilke appliances der bruger mest strøm*/
-    bar_chart(user, &your_total_consumption, amount_of_plugs);
+    bar_chart(user, your_total_consumption, amount_of_plugs);
 
-    printf("\n\nYou have used %f Kr on power.", convert_power_to_cash(&your_total_consumption));
+    printf("\n\nYou have used %.2f DKK on power\n", convert_power_to_cash(your_total_consumption));
 
-    printf("You have emittet %f kg of CO2.", convert_power_to_CO2(&your_total_consumption));
+    printf("You have emittet %.2f kg of CO2.", convert_power_to_CO2(your_total_consumption));
 }
 
 double total_consumption(user_profile user, int amount_of_plugs)
 {
     double tot_con = 0;
-    for (int i = 0; i < amount_of_plugs; i++)
+
+    int i;
+    for (i = 0; i < amount_of_plugs; i++)
     {
         tot_con += user.plug[i].power_consumption;
-        printf("%d\n", i);
     }
 
     return tot_con;
 }
 
-void bar_chart(user_profile user, double *ref, int amount_of_plugs)
+void bar_chart(user_profile user, double ref, int amount_of_plugs)
 {
-    for (int j = 0; j < amount_of_plugs; j++)
+    int j, i;
+    for (j = 0; j < amount_of_plugs; j++)
     {
         printf("\n\n");
-        for (double i = 0; i < (user.plug[j].power_consumption / *ref) * 100; i++)
+        for (i = 0; i < (user.plug[j].power_consumption / ref) * 100; i++)
         {
             printf("|");
         }
@@ -393,13 +368,13 @@ double percent(double a, double b)
     return (a / b) * 100;
 }
 /* Har en kilde på KWH_TO_DKK konstanten */
-double convert_power_to_cash(double *power)
+double convert_power_to_cash(double power)
 {
-    return *power * KWH_TO_DKK;
+    return power * KWH_TO_DKK;
 }
 
 /* Bliver beregnet i kg. Har også en kilde på det.  */
-double convert_power_to_CO2(double *power)
+double convert_power_to_CO2(double power)
 {
-    return *power * KWH_TO_CO2_KG;
+    return power * KWH_TO_CO2_KG;
 }

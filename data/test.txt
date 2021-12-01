@@ -1,0 +1,8 @@
+Household size: 2141
+Appliance: 1, Power Consumption: 6.000000
+Appliance: 2, Power Consumption: 7.000000
+Appliance: 3, Power Consumption: 8.000000
+Appliance: 4, Power Consumption: 9.000000
+Appliance: 5, Power Consumption: 10.000000
+Appliance: 1034, Power Consumption: 0.000000
+Appliance: 6422476, Power Consumption: -0.000000
