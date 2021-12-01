@@ -298,7 +298,7 @@ void print_percentage_of_average(int app, double user_cons, double average_cons)
 /* Prints tips on areas, where the users consumption is higher than average */
 void printTips(appliance above_average_consumption[], appliance below_average_consumption[], int index_below, int index_above)
 {
-    int i, userWantExtra;
+    int i, user_want_extra;
 
     /* Function for printing out all the instances where the appliances are above average in consumption. */
     printSwitch(index_above, above_average_consumption);
@@ -306,8 +306,8 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
     print_break();
 
     printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
-    scanf("%d", &userWantExtra);
-    if (userWantExtra == 1)
+    scanf("%d", &user_want_extra);
+    if (user_want_extra == 1)
     {
         printSwitch(index_below, below_average_consumption);
     }
@@ -318,12 +318,12 @@ void printTips(appliance above_average_consumption[], appliance below_average_co
 void printSwitch(int amount_of_plugs, appliance consumption[])
 {
     int i;
-    char tips_microwave[100] = "Only use the microwave for smaller meals.\n";
-    char tips_kettle[100] = "Make sure you dont boil more water than needed.\n";
-    char tips_oven[100] = "Make use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
-    char tips_refridgerator[100] = "Thaw frozen food in the refridgerator to help it keep.\n";
-    char tips_freezer[100] = "Remove frost from the freezers' surfaces.\n";
-    char tips_general[100] = "Make sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
+    char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
+    char tips_kettle[500] = "Kettle:\nMake sure you dont boil more water than needed.\n";
+    char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
+    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep.\n";
+    char tips_coffee[500] = "Coffee Machine:\nDont make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
+    char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
 
     for (i = 0; i < amount_of_plugs; i++)
     {
@@ -346,7 +346,7 @@ void printSwitch(int amount_of_plugs, appliance consumption[])
             break;
 
         case coffee:
-            printf("%s\n", tips_freezer);
+            printf("%s\n", tips_coffee);
             break;
 
         default:
