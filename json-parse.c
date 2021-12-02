@@ -32,7 +32,7 @@ char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven"
 
 struct appliance
 {
-    appliances id;
+    int id;
     double power_consumption;
 };
 typedef struct appliance appliance;
@@ -53,6 +53,8 @@ typedef struct average_profile average_profile;
 
 user_profile parse_json_data(user_profile);
 static void process_value(json_value *value, int depth);
+void print_user_struct(user_profile user);
+user_profile parse_json_user_data(user_profile user, json_value *value);
 
 static void print_depth_shift(int depth)
 {
@@ -135,7 +137,7 @@ static void process_value(json_value *value, int depth)
     }
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
     char *filename;
     FILE *fp;
@@ -146,18 +148,6 @@ int main(int argc, char **argv)
     json_value *value;
     user_profile user;
 
-    if (argc != 2)
-    {
-        fprintf(stderr, "%s <file_json>\n", argv[0]);
-        return 1;
-    }
-    filename = argv[1];
-
-    if (stat(filename, &filestatus) != 0)
-    {
-        fprintf(stderr, "File %s not found\n", filename);
-        return 1;
-    }
     file_size = filestatus.st_size;
     file_contents = (char *)malloc(filestatus.st_size);
     if (file_contents == NULL)
@@ -166,30 +156,18 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    fp = fopen(filename, "rb");
+    fp = fopen("data/user_data.json", "rb");
     if (fp == NULL)
     {
-        fprintf(stderr, "Unable to open %s\n", filename);
+        fprintf(stderr, "Unable to open data file\n");
         fclose(fp);
         free(file_contents);
         return 1;
     }
-    int nr;
-    nr = fread(file_contents, file_size, 1, fp);
-    printf("%d\n\n", nr);
 
-    if (nr != 1)
-    {
-        fprintf(stderr, "Unable to read content of %s | %d | %d\n", filename, errno, file_size);
-        fclose(fp);
-        free(file_contents);
-        return 1;
-    }
+    fread(file_contents, file_size, 1, fp);
+
     fclose(fp);
-
-    printf("%s\n", file_contents);
-
-    printf("--------------------------------\n\n");
 
     json = (json_char *)file_contents;
 
@@ -206,5 +184,37 @@ int main(int argc, char **argv)
 
     json_value_free(value);
     free(file_contents);
-    return 0;
+
+    user = parse_json_user_data(user, value);
+    print_user_struct(user);
+
+    return EXIT_SUCCESS;
+}
+
+user_profile parse_json_user_data(user_profile user, json_value *value)
+{
+
+    user.household_size = 120;
+
+    /*    for (i; i < PLUGS_MAX; i++)
+    {
+        user.plug[i].id = ;
+        user.plug[i].power_consumption = ;
+    } */
+    return user;
+}
+
+json_parse_ex()
+
+    void print_user_struct(user_profile user)
+{
+
+    int i = 0;
+
+    printf("Household size: %d\n", user.household_size);
+
+    for (i; i < PLUGS_MAX; i++)
+    {
+        printf("Index: %d | Plug ID: %s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
+    }
 }
