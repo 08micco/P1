@@ -121,7 +121,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
             run = 0;
     }
 
-    printf("\nplugs: %d  Size of household %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    printf("\nplugs: %d  Size of household: %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
     print_break();
     return user;
 }
@@ -299,15 +299,11 @@ void charts(user_profile user, int amount_of_plugs)
     printf("The general power usage in Denmark is %.2f:\n", general_power_consumption);
 
     if (your_total_consumption > general_power_consumption)
-    {
         printf("You use %.2f%% more power then the general public\n",
                (percent(your_total_consumption, general_power_consumption)));
-    }
     else
-    {
         printf("You use %.2f%% less power then the general public\n",
                (percent(general_power_consumption, your_total_consumption)));
-    }
     /* Værdieren fra de forskellige appliances laves som et bar-chart, og viser hvilke appliances der bruger mest strøm*/
     bar_chart(user, your_total_consumption, amount_of_plugs);
 
@@ -322,9 +318,7 @@ double total_consumption(user_profile user, int amount_of_plugs)
 
     int i;
     for (i = 0; i < amount_of_plugs; i++)
-    {
         tot_con += user.plug[i].power_consumption;
-    }
 
     return tot_con;
 }
@@ -336,9 +330,7 @@ void bar_chart(user_profile user, double ref, int amount_of_plugs)
     {
         printf("\n\n");
         for (i = 0; i < (user.plug[j].power_consumption / ref) * 100; i++)
-        {
             printf("|");
-        }
     }
 }
 
