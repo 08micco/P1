@@ -116,7 +116,6 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
         else
             run = 0;
     }
-
     print_break();
 
     *plug_index += 1;                                                                 /* Plug_index starts on 0. To get the right amount of plug further in the program, it is raised by one. */
@@ -310,9 +309,7 @@ double total_consumption(user_profile user, int amount_of_plugs)
 
     int i;
     for (i = 0; i < amount_of_plugs; i++)
-    {
         tot_con += user.plug[i].power_consumption;
-    }
 
     return tot_con;
 }
@@ -329,6 +326,7 @@ void bar_chart(user_profile user, double consumption, int plug_amount)
             printf("|");
 
         printf(" [%.2f%%]\n", percent(user.plug[i].power_consumption, consumption));
+
     }
 }
 
