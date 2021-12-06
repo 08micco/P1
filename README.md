@@ -1,4 +1,5 @@
-Codestyle:
+# Codestyle
+
 Snake case til funktion- og variablenavne:  min_funktion - min_variable
 Autoformatter: C/C++ extension i VScode
 
