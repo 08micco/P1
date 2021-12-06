@@ -7,7 +7,7 @@
 
 #define APPLIANCE_MAX 5
 #define PLUGS_MAX 10
-#define DAYS_SIMULATED 8
+//#define DAYS_SIMULATED 18
 
 enum appliances
 {
@@ -44,12 +44,21 @@ typedef struct average_data average_data;
 void print_data(user_data);
 user_data initialize_user_data(user_data, double[]);
 double random_num(double, double);
-void write_appliance_data_to_file(user_data[]);
+void write_appliance_data_to_file(user_data[], int);
 int calc_time(struct tm *, int, int);
 
 int main()
 {
-    user_data user[DAYS_SIMULATED];
+    int days_simulated;
+
+    printf("Power Plug Simulator\n\nEnter amount of days you want to simulate data for (MIN: 1, MAX: 18): ");
+    scanf(" %d", &days_simulated);
+    if (days_simulated > 18)
+        days_simulated = 18;
+    if (days_simulated < 1)
+        days_simulated = 1;
+
+    user_data user[days_simulated];
     srand(time(NULL)); /* Skal den være her??? */
 
     /* Min and max values for each appliance */
@@ -72,13 +81,13 @@ int main()
         0.6311};
 
     int i;
-    for (i = 0; i < DAYS_SIMULATED; i++)
+    for (i = 0; i < days_simulated; i++)
     {
         user[i] = initialize_user_data(user[i], min_max_appliances);
-        print_data(user[i]);
+        /* print_data(user[i]); */
     }
 
-    write_appliance_data_to_file(user);
+    write_appliance_data_to_file(user, days_simulated);
 
     return 0;
 }
@@ -116,7 +125,7 @@ double random_num(double max, double min)
 
 /* This function writes household size, appliance number and their power consumption to a file */
 /* Lots of spaces and newlines printed to file to make it more readable */
-void write_appliance_data_to_file(user_data user[])
+void write_appliance_data_to_file(user_data user[], int days_simulated)
 {
     FILE *file;
     int i, x; /* Days er midlertidig */
@@ -134,13 +143,13 @@ void write_appliance_data_to_file(user_data user[])
         exit(1);
     }
     fprintf(file, "{\n"); /* Start curly bracket */
-    fprintf(file, " \"days_simulated\": \"%d\",", DAYS_SIMULATED);
+    fprintf(file, " \"days_simulated\": \"%d\",", days_simulated);
     fprintf(file, "\n \"date\": [");
 
     /* For dates */
-    for (i = 0; i < DAYS_SIMULATED /* DATES */; i++)
+    for (i = 0; i < days_simulated /* DATES */; i++)
     {
-        fprintf(file, "\n   \"%d\",\n    {\n", calc_time(current_time, i+1, DAYS_SIMULATED)); /* Date */
+        fprintf(file, "\n   \"%d\",\n    {\n", calc_time(current_time, i + 1, days_simulated)); /* Date */
 
         /* For all appliances */
         for (x = 0; x < APPLIANCE_MAX; x++)
@@ -148,7 +157,7 @@ void write_appliance_data_to_file(user_data user[])
 
             fprintf(file, "     \"%s\": {\n", appliances_string[x + 1]);                                       /* Writes appliance name */
             fprintf(file, "         \"appliance_id\": %d,\n", user[i].plug[x].id);                             /* Writes appliance ID */
-            fprintf(file, "         \"power_consumption\": %f\n        }", user[i].plug[x].power_consumption); /* Writes appliance power consumption */
+            fprintf(file, "         \"power_consumption\": %.4f\n        }", user[i].plug[x].power_consumption); /* Writes appliance power consumption */
 
             /* If we are on the last element: don't end with comma as it is not the correct syntax for .json */
             if (x != APPLIANCE_MAX - 1)
@@ -156,7 +165,7 @@ void write_appliance_data_to_file(user_data user[])
             fprintf(file, "\n");
         }
         fprintf(file, "    }");
-        if (i != DAYS_SIMULATED - 1 /* DATES */)
+        if (i != days_simulated - 1 /* DATES */)
             fprintf(file, ",");
     }
     fprintf(file, "\n ]\n}"); /* Close curly bracket */
@@ -167,7 +176,7 @@ void write_appliance_data_to_file(user_data user[])
 int calc_time(struct tm *current_time, int index, int days_simulated)
 {
     time_t new_time = mktime(current_time) - ((days_simulated - index) * (60 * 60 * 24));
-    printf("\ntime: %d\n", new_time);
+    /* printf("\ntime: %d\n", new_time); */
 
     return new_time;
 }

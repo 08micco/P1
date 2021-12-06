@@ -9,7 +9,7 @@ dep = $(obj:.o=.d)
 
 .PHONY: build all clean
 
-build: json-parse.exe
+build: CO2-program.exe
 
 all: clean build
 
@@ -19,7 +19,7 @@ clean::
 	rm -rf *.exe
 
 	
-json-parse.exe: json-parse.o tiny-json/tiny-json.o
+CO2-program.exe: CO2-program.o tiny-json/tiny-json.o
 	gcc $(CFLAGS) -o $@ $^
 
 	

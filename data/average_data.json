@@ -1,0 +1,28 @@
+{
+ "days_simulated": "1",
+ "date": [
+   "1638795028",
+    {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.1487
+        },
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.2520
+        },
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 0.4931
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.5288
+        },
+     "coffee_machine": {
+         "appliance_id": 5,
+         "power_consumption": 0.2104
+        }
+    }
+ ]
+}
