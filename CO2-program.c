@@ -55,6 +55,7 @@ void print_tips(appliance[], appliance[], int, int);
 void print_switch(appliance[], int);
 void print_break(void);
 double percent(double, double);
+double average_consumption(int, appliance[], user_profile);
 double total_consumption(int, appliance[]);
 void bar_chart(user_profile, double, int);
 void charts(user_profile, int, average_profile);
@@ -242,39 +243,63 @@ void print_tips(appliance above_average_consumption[], appliance below_average_c
 
 void print_switch(appliance consumption[], int amount)
 {
-    int i;
+    int i, micro_yes = 0, kettle_yes = 0, oven_yes = 0, refridgerator_yes = 0, coffee_yes = 0;
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
     char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
     char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
     char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
-    /* char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n"; */
+    char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
 
     for (i = 0; i < amount; i++)
     {
         switch (consumption[i].id)
         {
         case microwave:
-            printf("%s\n", tips_microwave);
+            if (micro_yes != 1)
+            {
+                printf("%s\n", tips_microwave);
+                micro_yes++;
+            }
             break;
 
         case kettle:
-            printf("%s\n", tips_kettle);
+            if (kettle_yes != 1)
+            {
+                printf("%s\n", tips_kettle);
+                kettle_yes++;
+            }
             break;
 
         case oven:
-            printf("%s\n", tips_oven);
+            if (oven_yes != 1)
+            {
+                printf("%s\n", tips_oven);
+                oven_yes++;
+            }
             break;
 
         case refrigerator:
-            printf("%s\n", tips_refridgerator);
+            if (refridgerator_yes != 1)
+            {
+                printf("%s\n", tips_refridgerator);
+                refridgerator_yes++;
+            }
             break;
 
         case coffee:
-            printf("%s\n", tips_coffee);
+            if (coffee_yes != 1)
+            {
+                printf("%s\n", tips_coffee);
+                coffee_yes++;
+            }
             break;
+
+        default:
+            printf("Error1\n");
         }
     }
+    printf("%s\n", tips_general);
 }
 
 /* Print a breakline */
@@ -288,7 +313,7 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
     double your_total_consumption, average_power_consumption;
 
     /* Average power consumption, calculates from all 5 appliances*/
-    average_power_consumption = total_consumption(APPLIANCE_MAX, average.appliances);
+    average_power_consumption = average_consumption(amount_of_plugs, average.appliances, user);
     printf("The average power consumption in Denmark is %.4f\n", average_power_consumption);
 
     /* Total user consumption calculates from the amount of plug.*/
@@ -308,6 +333,61 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
 }
 
 /* Function that calculate total consumption. The function is called with different arrays of the type appliance*/
+double average_consumption(int amount, appliance array[], user_profile user)
+{
+    double consumption = 0;
+    int i, micro_yes = 0, kettle_yes = 0, oven_yes = 0, refrigerator_yes = 0, coffee_yes = 0;
+    for (i = 0; i < amount; i++)
+
+    switch (user.plug[i].id)
+    {
+    case microwave:
+        if (micro_yes != 1)
+        {
+            consumption += array[microwave].power_consumption;
+            micro_yes++;
+        }
+        break;
+
+    case kettle:
+        if (kettle_yes != 1)
+        {
+            consumption += array[kettle].power_consumption;
+            kettle_yes++;
+        }
+        break;
+
+    case oven:
+        if (oven_yes != 1)
+        {
+            consumption += array[oven].power_consumption;
+            oven_yes++;
+        }
+        break;
+
+    case refrigerator:
+        if (refrigerator_yes != 1)
+        {
+            consumption += array[refrigerator].power_consumption;
+            refrigerator_yes++;
+        }
+        break;
+
+    case coffee:
+        if (coffee_yes != 1)
+        {
+            consumption += array[coffee].power_consumption;
+            coffee_yes++;
+        }
+        break;
+
+    default:
+        printf("Error2\n");
+    }
+
+    return consumption;
+}
+
 double total_consumption(int amount, appliance array[])
 {
     double tot_con = 0;
