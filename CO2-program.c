@@ -73,9 +73,7 @@ int main(void)
 
     int i;
     for (i = 0; i < PLUGS_MAX; i++) /* Test. Skal slettes når json virker */
-    {
         user.plug[i].power_consumption = 6 + 1 * i;
-    }
 
     /* Test. Skal slettes når json virker */
     average.appliances[microwave].power_consumption = 7;
@@ -119,7 +117,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
                 *plug_index += 1;
             else
             {
-                printf("You cannot add more plugs.");
+                printf("You cannot add more plugs.\n");
                 run = 0;
             }
         }
@@ -204,14 +202,12 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
     if (user_consumption > average_consumption)
     {
         above_average_consumption[**index_above].power_consumption = user_consumption;
-        above_average_consumption[**index_above].id = id;
-        (**index_above)++;
+        above_average_consumption[(**index_above)++].id = id;
     }
     else
     {
         below_average_consumption[**index_below].power_consumption = user_consumption;
-        below_average_consumption[**index_below].id = id;
-        (**index_below)++;
+        below_average_consumption[(**index_below)++].id = id;
     }
 
     return id;
@@ -289,13 +285,15 @@ void print_break(void)
 
 void charts(user_profile user, int amount_of_plugs, average_profile average)
 {
+    double your_total_consumption, average_power_consumption;
+
     /* Average power consumption, calculates from all 5 appliances*/
-    double average_power_consumption = total_consumption(APPLIANCE_MAX, average.appliances);
-    printf("The average power consumption in Denmark is %.4f:\n", average_power_consumption);
+    average_power_consumption = total_consumption(APPLIANCE_MAX, average.appliances);
+    printf("The average power consumption in Denmark is %.4f\n", average_power_consumption);
 
     /* Total user consumption calculates from the amount of plug.*/
-    double your_total_consumption = total_consumption(amount_of_plugs, user.plug);
-    printf("Your total power consumption is %.4f kWh:\n", your_total_consumption);
+    your_total_consumption = total_consumption(amount_of_plugs, user.plug);
+    printf("Your total power consumption is %.4f kWh\n", your_total_consumption);
 
     if (your_total_consumption > average_power_consumption)
         printf("You use %.2f%% more power then the average public\n",
@@ -310,15 +308,12 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
 }
 
 /* Function that calculate total consumption. The function is called with different arrays of the type appliance*/
-double total_consumption(int amount_of_plugs, appliance array[])
+double total_consumption(int amount, appliance array[])
 {
     double tot_con = 0;
-
     int i;
-    for (i = 0; i < amount_of_plugs; i++)
-    {
+    for (i = 0; i < amount; i++)
         tot_con += array[i].power_consumption;
-    }
 
     return tot_con;
 }
