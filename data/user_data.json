@@ -1,59 +1,179 @@
 {
-    "household_size": 2,
-    "26/11/2021": {
-        "appliance1": {
-            "appliance-id": 1,
-            "power_consumption": 10
+ "days_simulated": "8",
+   "1638021294": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
         },
-        "appliance2": {
-            "appliance-id": 2,
-            "power_consumption": 20
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
         },
-        "appliance3": {
-            "appliance-id": 3,
-            "power_consumption": 30
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
         }
     },
-    "27/11/2021": {
-        "appliance1": {
-            "appliance-id": 1,
-            "power_consumption": 10
+   "1637416494": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
         },
-        "appliance2": {
-            "appliance-id": 2,
-            "power_consumption": 20
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
         },
-        "appliance3": {
-            "appliance-id": 3,
-            "power_consumption": 30
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
         }
     },
-    "28/11/2021": {
-        "appliance1": {
-            "appliance-id": 1,
-            "power_consumption": 10
+   "1636898094": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
         },
-        "appliance2": {
-            "appliance-id": 2,
-            "power_consumption": 20
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
         },
-        "appliance3": {
-            "appliance-id": 3,
-            "power_consumption": 30
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
         }
     },
-    "29/11/2021": {
-        "appliance1": {
-            "appliance-id": 1,
-            "power_consumption": 10
+   "1636466094": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
         },
-        "appliance2": {
-            "appliance-id": 2,
-            "power_consumption": 20
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
         },
-        "appliance3": {
-            "appliance-id": 3,
-            "power_consumption": 30
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
         }
-    }
+    },
+   "1636120494": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
+        },
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
+        },
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
+        }
+    },
+   "1635861294": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
+        },
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
+        },
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
+        }
+    },
+   "1635688494": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
+        },
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
+        },
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
+        }
+    },
+   "1635598494": {
+     "microwave": {
+         "appliance_id": 1,
+         "power_consumption": 0.215918
+        },
+     "kettle": {
+         "appliance_id": 2,
+         "power_consumption": 0.576514
+        },
+     "oven": {
+         "appliance_id": 3,
+         "power_consumption": 1.032648
+        },
+     "refrigerator": {
+         "appliance_id": 4,
+         "power_consumption": 0.201158
+        },
+     "freezer": {
+         "appliance_id": 5,
+         "power_consumption": 0.431911
+        }
+    },
 }
