@@ -15,12 +15,12 @@ enum appliances
     kettle,
     oven,
     refrigerator,
-    freezer
+    coffee_machine
 };
 typedef enum appliances appliances;
 
 char *appliances_string[APPLIANCE_MAX + 1] = {"empty", "microwave", "kettle",
-                                              "oven", "refrigerator", "freezer"};
+                                              "oven", "refrigerator", "coffee_machine"};
 
 struct appliance
 {
@@ -67,7 +67,7 @@ int main()
         /* Refigerator */
         0.5023,
         0.5552,
-        /* Freezer */
+        /* Coffee machine */
         0.1578,
         0.6311};
 
@@ -135,15 +135,17 @@ void write_appliance_data_to_file(user_data user[])
     }
     fprintf(file, "{\n"); /* Start curly bracket */
     fprintf(file, " \"days_simulated\": \"%d\",", DAYS_SIMULATED);
+    fprintf(file, "\n \"date\": [");
 
     /* For dates */
     for (i = 0; i < DAYS_SIMULATED /* DATES */; i++)
     {
-        fprintf(file, "\n   \"%d\": {\n", calc_time(current_time, i, DAYS_SIMULATED)); /* Date */
+        fprintf(file, "\n   \"%d\",\n    {\n", calc_time(current_time, i+1, DAYS_SIMULATED)); /* Date */
 
         /* For all appliances */
         for (x = 0; x < APPLIANCE_MAX; x++)
         {
+
             fprintf(file, "     \"%s\": {\n", appliances_string[x + 1]);                                       /* Writes appliance name */
             fprintf(file, "         \"appliance_id\": %d,\n", user[i].plug[x].id);                             /* Writes appliance ID */
             fprintf(file, "         \"power_consumption\": %f\n        }", user[i].plug[x].power_consumption); /* Writes appliance power consumption */
@@ -157,16 +159,15 @@ void write_appliance_data_to_file(user_data user[])
         if (i != DAYS_SIMULATED - 1 /* DATES */)
             fprintf(file, ",");
     }
-    fprintf(file, "\n}"); /* Close curly bracket */
+    fprintf(file, "\n ]\n}"); /* Close curly bracket */
 
     fclose(file);
 }
 
 int calc_time(struct tm *current_time, int index, int days_simulated)
 {
-    current_time->tm_mday = current_time->tm_mday - (days_simulated - index);
-
-    time_t new_time = mktime(current_time); /* Warning ved gcc -ansi -Wall -pedantic */
+    time_t new_time = mktime(current_time) - ((days_simulated - index) * (60 * 60 * 24));
+    printf("\ntime: %d\n", new_time);
 
     return new_time;
 }
