@@ -66,7 +66,7 @@ json_t const *open_json_file_user(void);
 json_t const *open_json_file_average(void);
 int parse_json_days_simulated(json_t const *);
 user_profile parse_json_user_data(user_profile, json_t const *, int, int *);
-average_profile parse_json_average_data(average_profile, json_t const *, int);
+average_profile parse_json_average_data(average_profile, json_t const *);
 
 /* Main program */
 int main(void)
@@ -80,14 +80,6 @@ int main(void)
     int amount_of_plugs = 0;
     int time;
 
-    /* Json file */
-    json_t const *json_user = open_json_file_user();
-    int days_simulated = parse_json_days_simulated(json_user);
-    printf("Days simulated: %d\n", days_simulated);
-    user = parse_json_user_data(user, json_user, days_simulated, &time);
-    json_t const *json_average = open_json_file_average();
-    average = parse_json_average_data(average, json_average);
-
     /* Test. Skal slettes når json virker */
     /* average.appliances[microwave].power_consumption = 7;
     average.appliances[kettle].power_consumption = 7;
@@ -96,6 +88,14 @@ int main(void)
     average.appliances[coffee].power_consumption = 7;  */
 
     user = initialize_user_profile(user, &amount_of_plugs);
+
+    /* Json file */
+    json_t const *json_user = open_json_file_user();
+    int days_simulated = parse_json_days_simulated(json_user);
+    /* printf("Days simulated: %d\n", days_simulated); */
+    user = parse_json_user_data(user, json_user, days_simulated, &time);
+    json_t const *json_average = open_json_file_average();
+    average = parse_json_average_data(average, json_average);
 
     compare_plugs(user, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
     print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
@@ -111,9 +111,8 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
     int run = 1;
     int scan_input;
 
-    printf("What is the size of the household?\n"); /* Scan for household size to the user*/
-    printf("Number of people: ");
-    scanf("%d", &user.household_size);
+    printf("What is the size of the household?\nNumber of people: "); /* Scan for household size to the user*/
+    scanf(" %d", &user.household_size);
     print_break();
 
     while (run && *plug_index < PLUGS_MAX) /* This continues until the user indicates that there is no more plugs, or the max of plugs limit is reached. */
@@ -137,11 +136,11 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
         else
             run = 0;
     }
-
     print_break();
 
-    *plug_index += 1;                                                                 /* Plug_index starts on 0. To get the right amount of plug further in the program, it is raised by one. */
-    printf("\nplugs: %d  Size of household %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    *plug_index += 1;                                                                             /* Plug_index starts on 0. To get the right amount of plug further in the program, it is raised by one. */
+    printf("Added %d plug(s) to your household of size %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
+    print_break();
     return user;
 }
 
@@ -472,7 +471,6 @@ json_t const *open_json_file_user(void)
 }
 json_t const *open_json_file_average(void)
 {
-    printf("test11");
     /* Read file into a string */
     char *str_average = 0;
     long length_average;
@@ -520,7 +518,7 @@ user_profile parse_json_user_data(user_profile user, json_t const *json_user, in
     int j = 0;
 
     json_t const *appliance;
-    for (appliance = json_getChild(data_user); j <= days_simulated; appliance = json_getSibling(appliance))
+    for (appliance = json_getChild(data_user); j < days_simulated; appliance = json_getSibling(appliance))
     {
 
         int i = 0;
@@ -530,87 +528,110 @@ user_profile parse_json_user_data(user_profile user, json_t const *json_user, in
         struct tm *date_time_struct = localtime(&date_time_t);
         char time_string[20];
         strftime(time_string, 20, "%d-%m-%Y", date_time_struct);
-        printf("Date: %s:\n", time_string);
+        /* printf("Date: %s:\n", time_string); */
 
         appliance = json_getSibling(appliance);
         if (JSON_OBJ == json_getType(appliance))
         {
             /* Parse microwave data */
             json_t const *json_microwave = json_getProperty(appliance, "microwave");
-            json_t const *microwave_appliance_id = json_getProperty(json_microwave, "appliance_id");
-            int const microwave_appliance_id_value = (int)json_getInteger(microwave_appliance_id);
-            user.plug[i].id = microwave_appliance_id_value;
+            /* json_t const *microwave_appliance_id = json_getProperty(json_microwave, "appliance_id");
+            int const microwave_appliance_id_value = (int)json_getInteger(microwave_appliance_id); 
+            user.plug[i].id = microwave_appliance_id_value; */
 
             json_t const *microwave_power_consumption = json_getProperty(json_microwave, "power_consumption");
             double const microwave_power_consumption_value = (double)json_getReal(microwave_power_consumption);
-            user.plug[i].power_consumption = microwave_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
-            i++;
+            /* user.plug[i].power_consumption = microwave_power_consumption_value; */
+
+            for (i = 0; i < PLUGS_MAX; i++)
+            {
+                if (user.plug[i].id == microwave)
+                    user.plug[i].power_consumption = microwave_power_consumption_value;
+            }
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
 
             /* Parse kettle data */
             json_t const *json_kettle = json_getProperty(appliance, "kettle");
-            json_t const *kettle_appliance_id = json_getProperty(json_kettle, "appliance_id");
+            /* json_t const *kettle_appliance_id = json_getProperty(json_kettle, "appliance_id");
             int const kettle_appliance_id_value = (int)json_getInteger(kettle_appliance_id);
-            user.plug[i].id = kettle_appliance_id_value;
+            user.plug[i].id = kettle_appliance_id_value; */
 
             json_t const *kettle_power_consumption = json_getProperty(json_kettle, "power_consumption");
             double const kettle_power_consumption_value = (double)json_getReal(kettle_power_consumption);
-            user.plug[i].power_consumption = kettle_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
-            i++;
+            /* user.plug[i].power_consumption = kettle_power_consumption_value; */
+            for (i = 0; i < PLUGS_MAX; i++)
+            {
+                if (user.plug[i].id == kettle)
+                    user.plug[i].power_consumption = kettle_power_consumption_value;
+            }
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
 
             /* Parse oven data */
             json_t const *json_oven = json_getProperty(appliance, "oven");
-            json_t const *oven_appliance_id = json_getProperty(json_oven, "appliance_id");
+            /* json_t const *oven_appliance_id = json_getProperty(json_oven, "appliance_id");
             int const oven_appliance_id_value = (int)json_getInteger(oven_appliance_id);
-            user.plug[i].id = oven_appliance_id_value;
+            user.plug[i].id = oven_appliance_id_value; */
 
             json_t const *oven_power_consumption = json_getProperty(json_oven, "power_consumption");
             double const oven_power_consumption_value = (double)json_getReal(oven_power_consumption);
-            user.plug[i].power_consumption = oven_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
-            i++;
+            /* user.plug[i].power_consumption = oven_power_consumption_value; */
+            for (i = 0; i < PLUGS_MAX; i++)
+            {
+                if (user.plug[i].id == oven)
+                    user.plug[i].power_consumption = oven_power_consumption_value;
+            }
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
 
             /* Parse refrigerator data */
             json_t const *json_refrigerator = json_getProperty(appliance, "refrigerator");
-            json_t const *refrigerator_appliance_id = json_getProperty(json_refrigerator, "appliance_id");
+            /* json_t const *refrigerator_appliance_id = json_getProperty(json_refrigerator, "appliance_id");
             int const refrigerator_appliance_id_value = (int)json_getInteger(refrigerator_appliance_id);
-            user.plug[i].id = refrigerator_appliance_id_value;
+            user.plug[i].id = refrigerator_appliance_id_value; */
 
             json_t const *refrigerator_power_consumption = json_getProperty(json_refrigerator, "power_consumption");
             double const refrigerator_power_consumption_value = (double)json_getReal(refrigerator_power_consumption);
-            user.plug[i].power_consumption = refrigerator_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
-            i++;
+            /* user.plug[i].power_consumption = refrigerator_power_consumption_value; */
+            for (i = 0; i < PLUGS_MAX; i++)
+            {
+                if (user.plug[i].id == refrigerator)
+                    user.plug[i].power_consumption = refrigerator_power_consumption_value;
+            }
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
 
             /* Parse coffee machine data */
             json_t const *json_coffee_machine = json_getProperty(appliance, "coffee_machine");
-            json_t const *coffee_machine_appliance_id = json_getProperty(json_coffee_machine, "appliance_id");
+            /* json_t const *coffee_machine_appliance_id = json_getProperty(json_coffee_machine, "appliance_id");
             int const coffee_machine_appliance_id_value = (int)json_getInteger(coffee_machine_appliance_id);
-            user.plug[i].id = coffee_machine_appliance_id_value;
+            user.plug[i].id = coffee_machine_appliance_id_value; */
 
             json_t const *coffee_machine_power_consumption = json_getProperty(json_coffee_machine, "power_consumption");
             double const coffee_machine_power_consumption_value = (double)json_getReal(coffee_machine_power_consumption);
-            user.plug[i].power_consumption = coffee_machine_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption);
+            /* user.plug[i].power_consumption = coffee_machine_power_consumption_value; */
+            for (i = 0; i <= PLUGS_MAX; i++)
+            {
+                if (user.plug[i].id == coffee)
+                    user.plug[i].power_consumption = coffee_machine_power_consumption_value;
+            }
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
         }
         j++;
-    }
+    } //
     return user;
 }
 
-average_profile parse_json_average_data(average_profile average, json_t const *json, int days_simulated)
+average_profile parse_json_average_data(average_profile average, json_t const *json)
 {
-    printf("test1");
+
     /* Parse time and data */
-    json_t const *data = json_getProperty(json, "date");
+    json_t const *data = json_getProperty(json, "data");
     if (!data || JSON_ARRAY != json_getType(data))
     {
-        puts("Error (Parse Json Data): No array found for \"date\"");
+        puts("Error (Parse Json Data): No array found for \"data\"");
     }
+    int days_simulated = 1;
     int j = 0;
     json_t const *appliance;
-    for (appliance = json_getChild(data); j <= days_simulated; appliance = json_getSibling(appliance))
+    for (appliance = json_getChild(data); j < days_simulated; appliance = json_getSibling(appliance))
     {
 
         appliance = json_getSibling(appliance);
@@ -625,7 +646,7 @@ average_profile parse_json_average_data(average_profile average, json_t const *j
             json_t const *microwave_power_consumption = json_getProperty(json_microwave, "power_consumption");
             double const microwave_power_consumption_value = (double)json_getReal(microwave_power_consumption);
             average.appliances[microwave].power_consumption = microwave_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", microwave, appliances_string[average.appliances[microwave].id], average.appliances[microwave].power_consumption);
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", microwave, appliances_string[average.appliances[microwave].id], average.appliances[microwave].power_consumption); */
 
             /* Parse kettle data */
             json_t const *json_kettle = json_getProperty(appliance, "kettle");
@@ -636,7 +657,7 @@ average_profile parse_json_average_data(average_profile average, json_t const *j
             json_t const *kettle_power_consumption = json_getProperty(json_kettle, "power_consumption");
             double const kettle_power_consumption_value = (double)json_getReal(kettle_power_consumption);
             average.appliances[kettle].power_consumption = kettle_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", kettle, appliances_string[average.appliances[kettle].id], average.appliances[kettle].power_consumption);
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", kettle, appliances_string[average.appliances[kettle].id], average.appliances[kettle].power_consumption); */
 
             /* Parse oven data */
             json_t const *json_oven = json_getProperty(appliance, "oven");
@@ -647,7 +668,7 @@ average_profile parse_json_average_data(average_profile average, json_t const *j
             json_t const *oven_power_consumption = json_getProperty(json_oven, "power_consumption");
             double const oven_power_consumption_value = (double)json_getReal(oven_power_consumption);
             average.appliances[oven].power_consumption = oven_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", oven, appliances_string[average.appliances[oven].id], average.appliances[oven].power_consumption);
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", oven, appliances_string[average.appliances[oven].id], average.appliances[oven].power_consumption); */
 
             /* Parse refrigerator data */
             json_t const *json_refrigerator = json_getProperty(appliance, "refrigerator");
@@ -658,7 +679,7 @@ average_profile parse_json_average_data(average_profile average, json_t const *j
             json_t const *refrigerator_power_consumption = json_getProperty(json_refrigerator, "power_consumption");
             double const refrigerator_power_consumption_value = (double)json_getReal(refrigerator_power_consumption);
             average.appliances[refrigerator].power_consumption = refrigerator_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", refrigerator, appliances_string[average.appliances[refrigerator].id], average.appliances[refrigerator].power_consumption);
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n", refrigerator, appliances_string[average.appliances[refrigerator].id], average.appliances[refrigerator].power_consumption); */
 
             /* Parse coffee machine data */
             json_t const *json_coffee_machine = json_getProperty(appliance, "coffee_machine");
@@ -669,7 +690,7 @@ average_profile parse_json_average_data(average_profile average, json_t const *j
             json_t const *coffee_machine_power_consumption = json_getProperty(json_coffee_machine, "power_consumption");
             double const coffee_machine_power_consumption_value = (double)json_getReal(coffee_machine_power_consumption);
             average.appliances[coffee].power_consumption = coffee_machine_power_consumption_value;
-            printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n\n", coffee, appliances_string[average.appliances[coffee].id], average.appliances[coffee].power_consumption);
+            /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n\n", coffee, appliances_string[average.appliances[coffee].id], average.appliances[coffee].power_consumption); */
         }
         j++;
     }
