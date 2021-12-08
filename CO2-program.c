@@ -615,7 +615,7 @@ user_profile parse_json_user_data(user_profile user, json_t const *json_user, in
             /* printf("Index: %d | Plug ID: %-15s | Power Consumption: %f kWh\n\n", i, appliances_string[user.plug[i].id], user.plug[i].power_consumption); */
         }
         j++;
-    } //
+    }
     return user;
 }
 
