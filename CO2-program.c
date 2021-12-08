@@ -247,7 +247,7 @@ void print_switch(appliance consumption[], int amount)
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
     char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
     char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
-    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
+    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep a cold temperature.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
     char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
 
