@@ -50,7 +50,7 @@ user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
 void compare_plugs(user_profile, average_profile, appliance *, appliance *, int, int *, int *);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
-void print_percentage_of_average(int, double, double);
+void print_percentage_of_average(int, int, double, double);
 void print_tips(appliance[], appliance[], int, int);
 void print_switch(appliance[], int);
 void print_break(void);
@@ -138,7 +138,8 @@ user_profile add_plug(user_profile user, int plug_index) /* Use the plug_index t
 {
     int plug_id;
 
-    printf("Add appliances from the list:\n%d | %s\n%d | %s\n%d | %s\n%d | %s\n%d | %s\nSelect appliance: ",
+    printf("Add appliances from the list to plug %d:\n%d | %s\n%d | %s\n%d | %s\n%d | %s\n%d | %s\nSelect appliance: ",
+           plug_index + 1,
            microwave, appliances_string[microwave],
            kettle, appliances_string[kettle],
            oven, appliances_string[oven],
@@ -189,7 +190,7 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
             break;
         }
 
-        print_percentage_of_average(current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
+        print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
     }
 
     print_break();
@@ -215,10 +216,10 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
 }
 
 /* Prints percentage of average consumption.*/
-void print_percentage_of_average(int app, double user_cons, double average_cons)
+void print_percentage_of_average(int i, int app, double user_cons, double average_cons)
 {
-    printf("Consumption of your %s is %.4f kWh. This is %.2lf%% of the average.\n", appliances_string[app], user_cons,
-           percent(user_cons, average_cons));
+    printf("Consumption of your %-14s on plug %2d is %7.4f kWh. This is %6.2lf%% of the average.\n",
+           appliances_string[app], i + 1, user_cons, percent(user_cons, average_cons));
 }
 
 /* Prints tips on areas, where the users consumption is higher than average */
@@ -312,9 +313,9 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
 {
     double your_total_consumption, average_power_consumption;
 
-    /* Average power consumption, calculates from all 5 appliances*/
+    /* Average power consumption, calculates from the appliances plugged in*/
     average_power_consumption = average_consumption(amount_of_plugs, average.appliances, user);
-    printf("The average power consumption in Denmark is %.4f\n", average_power_consumption);
+    printf("The average power consumption in Denmark for your appliances is %.4f kWh\n", average_power_consumption);
 
     /* Total user consumption calculates from the amount of plug.*/
     your_total_consumption = total_consumption(amount_of_plugs, user.plug);
@@ -339,51 +340,51 @@ double average_consumption(int amount, appliance array[], user_profile user)
     int i, micro_yes = 0, kettle_yes = 0, oven_yes = 0, refrigerator_yes = 0, coffee_yes = 0;
     for (i = 0; i < amount; i++)
 
-    switch (user.plug[i].id)
-    {
-    case microwave:
-        if (micro_yes != 1)
+        switch (user.plug[i].id)
         {
-            consumption += array[microwave].power_consumption;
-            micro_yes++;
-        }
-        break;
+        case microwave:
+            if (micro_yes != 1)
+            {
+                consumption += array[microwave].power_consumption;
+                micro_yes++;
+            }
+            break;
 
-    case kettle:
-        if (kettle_yes != 1)
-        {
-            consumption += array[kettle].power_consumption;
-            kettle_yes++;
-        }
-        break;
+        case kettle:
+            if (kettle_yes != 1)
+            {
+                consumption += array[kettle].power_consumption;
+                kettle_yes++;
+            }
+            break;
 
-    case oven:
-        if (oven_yes != 1)
-        {
-            consumption += array[oven].power_consumption;
-            oven_yes++;
-        }
-        break;
+        case oven:
+            if (oven_yes != 1)
+            {
+                consumption += array[oven].power_consumption;
+                oven_yes++;
+            }
+            break;
 
-    case refrigerator:
-        if (refrigerator_yes != 1)
-        {
-            consumption += array[refrigerator].power_consumption;
-            refrigerator_yes++;
-        }
-        break;
+        case refrigerator:
+            if (refrigerator_yes != 1)
+            {
+                consumption += array[refrigerator].power_consumption;
+                refrigerator_yes++;
+            }
+            break;
 
-    case coffee:
-        if (coffee_yes != 1)
-        {
-            consumption += array[coffee].power_consumption;
-            coffee_yes++;
-        }
-        break;
+        case coffee:
+            if (coffee_yes != 1)
+            {
+                consumption += array[coffee].power_consumption;
+                coffee_yes++;
+            }
+            break;
 
-    default:
-        printf("Error2\n");
-    }
+        default:
+            printf("Error2\n");
+        }
 
     return consumption;
 }
