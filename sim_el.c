@@ -65,20 +65,20 @@ int main()
     /* Warning ved gcc -ansi -Wall -pedantic */
     double min_max_appliances[APPLIANCE_MAX * 2] = {
         /* Microwave */
-        0.1115,
-        0.4460,
+        0.0743,
+        0.2973,
         /* Kettle */
-        0.1890,
-        0.7560,
+        0.1260,
+        0.5040,
         /* Oven */
-        0.3698,
-        1.4793,
+        0.2466,
+        0.9862,
         /* Refigerator */
         0.5023,
         0.5552,
         /* Coffee machine */
-        0.1578,
-        0.6311};
+        0.1052,
+        0.4208};
 
     int i;
     for (i = 0; i < days_simulated; i++)
