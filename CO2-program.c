@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 #include "tiny-json/tiny-json.h"
 /* #include "Charts.h" */
@@ -22,7 +23,8 @@ enum appliances
 };
 typedef enum appliances appliances;
 
-char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "Coffee machine"};
+char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "Coffee Machine"};
+char *appliances_string_lwr[APPLIANCE_MAX] = {"empty", "microwave", "kettle", "oven", "refrigerator", "coffee machine"};
 
 struct appliance
 {
@@ -49,7 +51,7 @@ typedef struct average_profile average_profile;
 user_profile initialize_user_profile(user_profile, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
-void compare_plugs(user_profile, average_profile, appliance *, appliance *, int, int *, int *);
+void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, double, double);
 void print_tips(appliance[], appliance[], int, int);
@@ -65,8 +67,9 @@ double convert_power_to_CO2(double);
 json_t const *open_json_file_user(void);
 json_t const *open_json_file_average(void);
 int parse_json_days_simulated(json_t const *);
-user_profile parse_json_user_data(user_profile, double *, json_t const *, int, int, int *);
+user_profile parse_json_user_data(user_profile, user_profile *, json_t const *, int, int, int *);
 average_profile parse_json_average_data(average_profile, json_t const *);
+/* double calc_difference_user_prev_avg(microwave, user, user_prev_avg); */
 
 /* Main program */
 int main(void)
@@ -75,18 +78,19 @@ int main(void)
     appliance below_average_consumption[PLUGS_MAX];
     int index_above = 0, index_below = 0;
     user_profile user;
-    //user_profile user_prev_avg = {};
+    user_profile user_prev_avg;
 
     /* user_profile user_data; */
     average_profile average;
 
     memset(&user, 0, sizeof(user));
-    //memset(&user_prev_avg, 0, sizeof(user_prev_avg));
+    memset(&user_prev_avg, 0, sizeof(user_prev_avg));
     memset(&average, 0, sizeof(average));
     int amount_of_plugs = 0;
     int time;
 
-    double *user_prev_average[APPLIANCE_MAX + 1];
+    /*     double user_prev_average[APPLIANCE_MAX + 1];
+    memset(&user_prev_average, 0, sizeof(user_prev_average)); */
     /* Test. Skal slettes når json virker */
     /* average.appliances[microwave].power_consumption = 7;
     average.appliances[kettle].power_consumption = 7;
@@ -99,21 +103,29 @@ int main(void)
     /* Json file */
     json_t const *json_user = open_json_file_user();
     int days_simulated = parse_json_days_simulated(json_user);
-    /* printf("Days simulated: %d\n", days_simulated); */
-    user = parse_json_user_data(user, user_prev_average, json_user, days_simulated, amount_of_plugs, &time);
+    printf("Registered data for %d days.\n", days_simulated);
+    print_break();
+    user = parse_json_user_data(user, &user_prev_avg, json_user, days_simulated, amount_of_plugs, &time);
     json_t const *json_average = open_json_file_average();
     average = parse_json_average_data(average, json_average);
 
-    /* ---------------- */
+    compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
+
     for (int i = 1; i <= amount_of_plugs; i++)
     {
-        printf("USR PREV AVG for %s is %f\n", appliances_string[i], user_prev_average[i]);
+        printf("Average for previous days for %s is %f\n", appliances_string_lwr[i], user_prev_avg.plug[i].power_consumption);
     }
-
-    compare_plugs(user, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
-    print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
+    printf("Overall average for previous days is %f\n",
+           user_prev_avg.plug[microwave].power_consumption +
+               user_prev_avg.plug[kettle].power_consumption +
+               user_prev_avg.plug[oven].power_consumption +
+               user_prev_avg.plug[refrigerator].power_consumption +
+               user_prev_avg.plug[coffee].power_consumption / (APPLIANCE_MAX - 2));
+    print_break();
 
     charts(user, amount_of_plugs, average);
+
+    print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
 
     return EXIT_SUCCESS;
 }
@@ -176,10 +188,11 @@ user_profile add_plug(user_profile user, int plug_index) /* Use the plug_index t
 }
 
 /* This function compares the power consumption of plugs with the average power consumption of appliances. */
-void compare_plugs(user_profile user, average_profile average, appliance *above_average_consumption,
+void compare_plugs(user_profile user, user_profile user_prev_avg, average_profile average, appliance *above_average_consumption,
                    appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below)
 {
     int current_appliance;
+    double appliance_differnce[APPLIANCE_MAX + 1];
     int i;
     for (i = 0; i < amount_of_plugs; i++)
     {
@@ -190,34 +203,53 @@ void compare_plugs(user_profile user, average_profile average, appliance *above_
         case microwave:
             current_appliance = place_in_correct_array(microwave, user.plug[i].power_consumption, average.appliances[microwave].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+
+            appliance_differnce[microwave] = percent(user.plug[i].power_consumption, user_prev_avg.plug[microwave].power_consumption);
+
             break;
 
         case kettle:
             current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+            appliance_differnce[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
             break;
 
         case oven:
             current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+            appliance_differnce[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
             break;
 
         case refrigerator:
             current_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+            appliance_differnce[refrigerator] = percent(user.plug[i].power_consumption, user_prev_avg.plug[refrigerator].power_consumption);
             break;
 
         case coffee:
             current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+            appliance_differnce[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
             break;
         }
 
         print_percentage_of_average(current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
     }
 
+    for (i = 0; i < amount_of_plugs; i++)
+        printf("Usage of your %s today is %f%% of that from previous days\n", appliances_string_lwr[i], appliance_differnce[i]);
+
     print_break();
 }
+
+/* double calc_difference_user_prev_avg(int id, int appliance, user_profile *user, user_profile user_prev_avg)
+{
+    double differnce;
+
+    differnce = user.plug[id]->power_consumption - user_prev_avg.plug[appliance]->power_consumption;
+
+    return differnce;
+} */
 
 /* if the user power consumtion is higher than the average for that appliance,
 it is placed into the array above_average_consumption. Otherwise places in below_average_consumption */
@@ -241,7 +273,7 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
 /* Prints percentage of average consumption.*/
 void print_percentage_of_average(int app, double user_cons, double average_cons)
 {
-    printf("Consumption of your %s is %.4f kWh. This is %.2lf%% of the average.\n", appliances_string[app], user_cons,
+    printf("Consumption of your %s is %.4f kWh. This is %.2lf%% of the average Dane.\n", appliances_string_lwr[app], user_cons,
            percent(user_cons, average_cons));
 }
 
@@ -519,8 +551,9 @@ int parse_json_days_simulated(json_t const *json)
     return days_sim_value;
 }
 
-user_profile parse_json_user_data(user_profile user, double *user_prev_average, json_t const *json_user, int days_simulated, int amount_of_plugs, int *time)
+user_profile parse_json_user_data(user_profile user, user_profile *user_prev_avg, json_t const *json_user, int days_simulated, int amount_of_plugs, int *time)
 {
+    int microwave_total = 0, kettle_total = 0, oven_total = 0, refrigerator_total = 0, coffee_total = 0;
     /* Parse time and data */
     json_t const *data_user = json_getProperty(json_user, "date");
     if (!data_user || JSON_ARRAY != json_getType(data_user))
@@ -534,7 +567,6 @@ user_profile parse_json_user_data(user_profile user, double *user_prev_average, 
     for (appliance = json_getChild(data_user); j < days_simulated; appliance = json_getSibling(appliance))
     {
 
-        int i = 0;
         int const time_int = (int)json_getInteger(appliance);
         *time = time_int;
         time_t date_time_t = *time;
@@ -543,98 +575,112 @@ user_profile parse_json_user_data(user_profile user, double *user_prev_average, 
         strftime(time_string, 20, "%d-%m-%Y", date_time_struct);
         /* printf("Date: %s:\n", time_string); */
 
+        /* printf("APP0 JSON TYPE: %d\n", json_getType(appliance)); */
         appliance = json_getSibling(appliance);
+        /* printf("APP JSON TYPE: %d\n", json_getType(appliance)); */
         if (JSON_OBJ == json_getType(appliance))
         {
-            int microwave_total = 0, kettle_total = 0, oven_total = 0, refrigerator_total = 0, coffee_total = 0;
-            switch (user.plug[i].id)
+            int i;
+            for (i = 0; i < amount_of_plugs; i++)
             {
-                /* Parse microwave data */
-                json_t const *json_microwave = json_getProperty(appliance, "microwave");
-                json_t const *microwave_power_consumption = json_getProperty(json_microwave, "power_consumption");
-                double const microwave_power_consumption_value = (double)json_getReal(microwave_power_consumption);
-                if (j != days_simulated - 1)
+                switch (user.plug[i].id)
                 {
-                    user_prev_average[microwave] += microwave_power_consumption_value;
-                    microwave_total++;
-                }
-                else
-                    user.plug[i].power_consumption = microwave_power_consumption_value;
+                case microwave:
+                {
+                    /* Parse microwave data */
+                    json_t const *json_microwave = json_getProperty(appliance, "microwave");
+                    json_t const *microwave_power_consumption = json_getProperty(json_microwave, "power_consumption");
+                    double const microwave_power_consumption_value = (double)json_getReal(microwave_power_consumption);
+                    if (j != days_simulated - 1)
+                    {
+                        user_prev_avg->plug[microwave].power_consumption += microwave_power_consumption_value;
+                        microwave_total++;
+                    }
+                    else
+                        user.plug[i].power_consumption = microwave_power_consumption_value;
 
-            case kettle:
-            {
-                /* Parse kettle data */
-                json_t const *json_kettle = json_getProperty(appliance, "kettle");
-                json_t const *kettle_power_consumption = json_getProperty(json_kettle, "power_consumption");
-                double const kettle_power_consumption_value = (double)json_getReal(kettle_power_consumption);
-                if (j != days_simulated - 1)
-                {
-                    user_prev_average[kettle] += kettle_power_consumption_value;
-                    kettle_total++;
+                    break;
                 }
-                else
-                    user.plug[i].power_consumption = kettle_power_consumption_value;
-                break;
-            }
-            case oven:
-            {
-                /* Parse oven data */
-                json_t const *json_oven = json_getProperty(appliance, "oven");
-                json_t const *oven_power_consumption = json_getProperty(json_oven, "power_consumption");
-                double const oven_power_consumption_value = (double)json_getReal(oven_power_consumption);
-                if (j != days_simulated - 1)
+                case kettle:
                 {
-                    user_prev_average[oven] += oven_power_consumption_value;
-                    oven_total++;
+                    /* Parse kettle data */
+                    json_t const *json_kettle = json_getProperty(appliance, "kettle");
+                    json_t const *kettle_power_consumption = json_getProperty(json_kettle, "power_consumption");
+                    double const kettle_power_consumption_value = (double)json_getReal(kettle_power_consumption);
+                    if (j != days_simulated - 1)
+                    {
+                        user_prev_avg->plug[kettle].power_consumption += kettle_power_consumption_value;
+                        kettle_total++;
+                    }
+                    else
+                        user.plug[i].power_consumption = kettle_power_consumption_value;
+
+                    break;
                 }
-                else
-                    user.plug[i].power_consumption = oven_power_consumption_value;
-                break;
-            }
-            case refrigerator:
-            {
-                /* Parse refrigerator data */
-                json_t const *json_refrigerator = json_getProperty(appliance, "refrigerator");
-                json_t const *refrigerator_power_consumption = json_getProperty(json_refrigerator, "power_consumption");
-                double const refrigerator_power_consumption_value = (double)json_getReal(refrigerator_power_consumption);
-                if (j != days_simulated - 1)
+                case oven:
                 {
-                    user_prev_average[refrigerator] += refrigerator_power_consumption_value;
-                    refrigerator_total++;
+                    /* Parse oven data */
+                    json_t const *json_oven = json_getProperty(appliance, "oven");
+                    json_t const *oven_power_consumption = json_getProperty(json_oven, "power_consumption");
+                    double const oven_power_consumption_value = (double)json_getReal(oven_power_consumption);
+                    if (j != days_simulated - 1)
+                    {
+                        user_prev_avg->plug[oven].power_consumption += oven_power_consumption_value;
+                        oven_total++;
+                    }
+                    else
+                        user.plug[i].power_consumption = oven_power_consumption_value;
+
+                    break;
                 }
-                else
-                    user.plug[i].power_consumption = refrigerator_power_consumption_value;
-                break;
-            }
-            case coffee:
-            {
-                /* Parse coffee machine data */
-                json_t const *json_coffee_machine = json_getProperty(appliance, "coffee_machine");
-                json_t const *coffee_machine_power_consumption = json_getProperty(json_coffee_machine, "power_consumption");
-                double const coffee_machine_power_consumption_value = (double)json_getReal(coffee_machine_power_consumption);
-                if (j != days_simulated - 1)
+                case refrigerator:
                 {
-                    user_prev_average[coffee] += coffee_machine_power_consumption_value;
-                    coffee_total++;
+                    /* Parse refrigerator data */
+                    json_t const *json_refrigerator = json_getProperty(appliance, "refrigerator");
+                    json_t const *refrigerator_power_consumption = json_getProperty(json_refrigerator, "power_consumption");
+                    double const refrigerator_power_consumption_value = (double)json_getReal(refrigerator_power_consumption);
+                    if (j != days_simulated - 1)
+                    {
+                        user_prev_avg->plug[refrigerator].power_consumption += refrigerator_power_consumption_value;
+                        refrigerator_total++;
+                    }
+                    else
+                        user.plug[i].power_consumption = refrigerator_power_consumption_value;
+
+                    break;
                 }
-                else
-                    user.plug[i].power_consumption = coffee_machine_power_consumption_value;
-                break;
-            } //
-            default:
-                printf("ERROR (pare_json_user_data switch): ID not found (ID: %d)\n", user.plug[i].id);
-                break;
-            }
-            if (days_simulated > 1)
-            {
-                user_prev_average[microwave] /= microwave_total;
-                user_prev_average[kettle] /= kettle_total;
-                user_prev_average[oven] /= oven_total;
-                user_prev_average[refrigerator] /= refrigerator_total;
-                user_prev_average[coffee] /= coffee_total;
+                case coffee:
+                {
+                    /* Parse coffee machine data */
+                    json_t const *json_coffee_machine = json_getProperty(appliance, "coffee_machine");
+                    json_t const *coffee_machine_power_consumption = json_getProperty(json_coffee_machine, "power_consumption");
+                    double const coffee_machine_power_consumption_value = (double)json_getReal(coffee_machine_power_consumption);
+                    if (j != days_simulated - 1)
+                    {
+                        user_prev_avg->plug[coffee].power_consumption += coffee_machine_power_consumption_value;
+                        coffee_total++;
+                    }
+                    else
+                        user.plug[i].power_consumption = coffee_machine_power_consumption_value;
+
+                    break;
+                }
+                default:
+                    printf("ERROR (pare_json_user_data switch): ID not found (ID: %d)\n", user.plug[i].id);
+                    break;
+                }
             }
         }
         j++;
+    }
+
+    if (days_simulated > 1)
+    {
+        user_prev_avg->plug[microwave].power_consumption /= microwave_total;
+        user_prev_avg->plug[kettle].power_consumption /= kettle_total;
+        user_prev_avg->plug[oven].power_consumption /= oven_total;
+        user_prev_avg->plug[refrigerator].power_consumption /= refrigerator_total;
+        user_prev_avg->plug[coffee].power_consumption /= coffee_total;
     }
     return user;
 }
