@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
 #include "tiny-json/tiny-json.h"
 /* #include "Charts.h" */
@@ -12,6 +11,7 @@
 #define KWH_TO_DKK 2.3                    /* Price for 1 kWh in DKK */
 #define KWH_TO_CO2_G 122                  /* CO2 g emmission pr 1 kWh production */
 #define KWH_TO_CO2_KG KWH_TO_CO2_G / 1000 /* CO2 kg emmission pr 1 kWh production */
+#define PRINT_LINE_SIZE 96                /* Length of line to seperate text (must be even when divided by 2)*/
 
 enum appliances
 {
@@ -70,6 +70,7 @@ int parse_json_days_simulated(json_t const *);
 user_profile parse_json_user_data(user_profile, user_profile *, json_t const *, int, int, int *);
 average_profile parse_json_average_data(average_profile, json_t const *);
 /* double calc_difference_user_prev_avg(microwave, user, user_prev_avg); */
+void print_title(char[]);
 
 /* Main program */
 int main(void)
@@ -110,7 +111,7 @@ int main(void)
     average = parse_json_average_data(average, json_average);
 
     compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
-
+    print_break();
     for (int i = 1; i <= amount_of_plugs; i++)
     {
         printf("Average for previous days for %s is %f\n", appliances_string_lwr[i], user_prev_avg.plug[i].power_consumption);
@@ -123,6 +124,7 @@ int main(void)
                user_prev_avg.plug[coffee].power_consumption / (APPLIANCE_MAX - 2));
     print_break();
 
+    print_title("Chart For Distribution of Your Power Usage");
     charts(user, amount_of_plugs, average);
 
     print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
@@ -237,9 +239,10 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     }
 
     for (i = 0; i < amount_of_plugs; i++)
-        printf("Usage of your %s today is %f%% of that from previous days\n", appliances_string_lwr[i], appliance_differnce[i]);
-
-    print_break();
+    {
+        if (user.plug[i].id != 0)
+            printf("Usage of your %s today is %f%% of that from previous days.\n", appliances_string_lwr[user.plug[i].id], appliance_differnce[user.plug[i].id]);
+    }
 }
 
 /* double calc_difference_user_prev_avg(int id, int appliance, user_profile *user, user_profile user_prev_avg)
@@ -287,7 +290,7 @@ void print_tips(appliance above_average_consumption[], appliance below_average_c
 
     print_break();
 
-    printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\n Select option: ");
+    printf("Do you wish to get tips on appliances you didn't overuse as well?:\n1 | Yes\n2 | No\nSelect option: ");
     scanf("%d", &user_want_extra);
     print_break();
 
@@ -306,7 +309,7 @@ void print_switch(appliance consumption[], int amount)
     char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
     char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
-
+    /* xd */
     for (i = 0; i < amount; i++)
     {
         switch (consumption[i].id)
@@ -361,7 +364,27 @@ void print_switch(appliance consumption[], int amount)
 /* Print a breakline */
 void print_break(void)
 {
-    printf("------------------------------------------------------------------------------------------------\n");
+    int i;
+
+    for (i = 0; i < PRINT_LINE_SIZE; i++)
+        printf("-");
+    printf("\n");
+}
+
+void print_title(char title[])
+{
+    int title_length = strlen(title);
+    int line_length = (PRINT_LINE_SIZE - title_length - 2) / 2; /* Calculates the line size for each side */
+    int i;
+
+    for (i = 0; i < line_length; i++)
+        printf("=");
+    printf(" %s ", title);
+    if (line_length % 2 != 0)
+        line_length = line_length + 1;
+    for (i = 0; i < line_length; i++)
+        printf("=");
+    printf("\n");
 }
 
 void charts(user_profile user, int amount_of_plugs, average_profile average)
@@ -558,7 +581,7 @@ user_profile parse_json_user_data(user_profile user, user_profile *user_prev_avg
     json_t const *data_user = json_getProperty(json_user, "date");
     if (!data_user || JSON_ARRAY != json_getType(data_user))
     {
-        puts("Error (Parse Json Data): No array found for \"date\"");
+        puts("Error (Parse Json User Data): No array found for \"date\"");
     }
 
     int j = 0;
