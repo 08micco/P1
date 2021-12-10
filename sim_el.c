@@ -51,10 +51,10 @@ int main()
 {
     int days_simulated;
 
-    printf("Power Plug Simulator\n\nEnter amount of days you want to simulate data for (MIN: 1, MAX: 18): ");
+    printf("Power Plug Simulator\n\nEnter amount of days you want to simulate data for (MIN: 1, MAX: 100): ");
     scanf(" %d", &days_simulated);
-    if (days_simulated > 18)
-        days_simulated = 18;
+    if (days_simulated > 100)
+        days_simulated = 100;
     if (days_simulated < 1)
         days_simulated = 1;
 
@@ -71,7 +71,7 @@ int main()
         0.1890,
         0.7560,
         /* Oven */
-        0.4438,
+        0.3698,
         1.4793,
         /* Refigerator */
         0.5023,
