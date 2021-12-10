@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include "tiny-json/tiny-json.h"
-/* #include "Charts.h" */
 
 #define APPLIANCE_MAX 6                   /* Amount of appliances the system knows */
 #define PLUGS_MAX 10                      /* Max amount of plugs in the system */
@@ -228,18 +227,9 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     for (i = 0; i < amount_of_plugs; i++)
     {
         if (user.plug[i].id != 0)
-            printf("Usage of your %s today is %.2f%% of that from previous days.\n", appliances_string_lwr[user.plug[i].id], appliance_differnce[user.plug[i].id]);
+            printf("Consumption of your %-14s on plug %2d today is %.2f%% compared to average of previous days.\n", appliances_string_lwr[user.plug[i].id], i + 1, appliance_differnce[user.plug[i].id]);
     }
 }
-
-/* double calc_difference_user_prev_avg(int id, int appliance, user_profile *user, user_profile user_prev_avg)
-{
-    double differnce;
-
-    differnce = user.plug[id]->power_consumption - user_prev_avg.plug[appliance]->power_consumption;
-
-    return differnce;
-} */
 
 /* if the user power consumtion is higher than the average for that appliance,
 it is placed into the array above_average_consumption. Otherwise places in below_average_consumption */
@@ -291,7 +281,7 @@ void print_switch(appliance consumption[], int amount)
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
     char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
     char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
-    char tips_refrigerator[500] = "Refrigerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
+    char tips_refrigerator[500] = "Refrigerator:\nThaw frozen food in the refridgerator to help it keep a cold temperature.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
     char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
     /* xd */
