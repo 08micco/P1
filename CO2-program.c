@@ -71,6 +71,7 @@ user_profile parse_json_user_data(user_profile, user_profile *, json_t const *, 
 average_profile parse_json_average_data(average_profile, json_t const *);
 /* double calc_difference_user_prev_avg(microwave, user, user_prev_avg); */
 void print_title(char[]);
+void print_section(char[]);
 
 /* Main program */
 int main(void)
@@ -90,15 +91,7 @@ int main(void)
     int amount_of_plugs = 0;
     int time;
 
-    /*     double user_prev_average[APPLIANCE_MAX + 1];
-    memset(&user_prev_average, 0, sizeof(user_prev_average)); */
-    /* Test. Skal slettes når json virker */
-    /* average.appliances[microwave].power_consumption = 7;
-    average.appliances[kettle].power_consumption = 7;
-    average.appliances[oven].power_consumption = 7;
-    average.appliances[refrigerator].power_consumption = 7;
-    average.appliances[coffee].power_consumption = 7;  */
-
+    print_title("Create Your Home Profile");
     user = initialize_user_profile(user, &amount_of_plugs);
 
     /* Json file */
@@ -110,24 +103,17 @@ int main(void)
     json_t const *json_average = open_json_file_average();
     average = parse_json_average_data(average, json_average);
 
+    print_title("Comparison of Appliances");
     compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
     print_break();
-    for (int i = 1; i <= amount_of_plugs; i++)
-    {
-        printf("Average for previous days for %s is %f\n", appliances_string_lwr[i], user_prev_avg.plug[i].power_consumption);
-    }
-    printf("Overall average for previous days is %f\n",
-           user_prev_avg.plug[microwave].power_consumption +
-               user_prev_avg.plug[kettle].power_consumption +
-               user_prev_avg.plug[oven].power_consumption +
-               user_prev_avg.plug[refrigerator].power_consumption +
-               user_prev_avg.plug[coffee].power_consumption / (APPLIANCE_MAX - 2));
+
+    print_title("Overview of Your Power Usage");
+    charts(user, amount_of_plugs, average);
     print_break();
 
-    print_title("Chart For Distribution of Your Power Usage");
-    charts(user, amount_of_plugs, average);
-
+    print_title("Tips To Improve Your CO2 Footprint");
     print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
+    print_break();
 
     return EXIT_SUCCESS;
 }
@@ -237,11 +223,11 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
 
         print_percentage_of_average(current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
     }
-
+    printf("\n");
     for (i = 0; i < amount_of_plugs; i++)
     {
         if (user.plug[i].id != 0)
-            printf("Usage of your %s today is %f%% of that from previous days.\n", appliances_string_lwr[user.plug[i].id], appliance_differnce[user.plug[i].id]);
+            printf("Usage of your %s today is %.2f%% of that from previous days.\n", appliances_string_lwr[user.plug[i].id], appliance_differnce[user.plug[i].id]);
     }
 }
 
@@ -296,8 +282,6 @@ void print_tips(appliance above_average_consumption[], appliance below_average_c
 
     if (user_want_extra == 1)
         print_switch(below_average_consumption, index_below);
-
-    print_break();
 }
 
 void print_switch(appliance consumption[], int amount)
@@ -306,7 +290,7 @@ void print_switch(appliance consumption[], int amount)
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
     char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
     char tips_oven[500] = "Oven:\nMake use of the ovens pre- and postheat to cook your meals.\nOnly use the oven for bigger meals.\n";
-    char tips_refridgerator[500] = "Refridgerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
+    char tips_refrigerator[500] = "Refrigerator:\nThaw frozen food in the refridgerator to help it keep?????.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
     char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
     /* xd */
@@ -341,7 +325,7 @@ void print_switch(appliance consumption[], int amount)
         case refrigerator:
             if (refridgerator_yes != 1)
             {
-                printf("%s\n", tips_refridgerator);
+                printf("%s\n", tips_refrigerator);
                 refridgerator_yes++;
             }
             break;
@@ -355,7 +339,7 @@ void print_switch(appliance consumption[], int amount)
             break;
 
         default:
-            printf("Error1\n");
+            printf("Error (Print Switch): ID not found (ID: %d).\n", consumption[i].id);
         }
     }
     printf("%s\n", tips_general);
@@ -374,17 +358,24 @@ void print_break(void)
 void print_title(char title[])
 {
     int title_length = strlen(title);
-    int line_length = (PRINT_LINE_SIZE - title_length - 2) / 2; /* Calculates the line size for each side */
+    int line1_length = (double)ceil((PRINT_LINE_SIZE - title_length - 2) / 2);  /* Calculates the line size for the left side of title */
+    int line2_length = (double)floor((PRINT_LINE_SIZE - title_length - 2) / 2); /* Calculates the line size for the right side of title */
     int i;
 
-    for (i = 0; i < line_length; i++)
+    printf("\n");
+    for (i = 0; i < line1_length; i++)
         printf("=");
     printf(" %s ", title);
-    if (line_length % 2 != 0)
-        line_length = line_length + 1;
-    for (i = 0; i < line_length; i++)
+    /*     if (line_length % 2 != 0)
+        line_length = line_length + 1; */
+    for (i = 0; i < line2_length; i++)
         printf("=");
-    printf("\n");
+    printf("\n\n");
+}
+
+void print_section(char section[])
+{
+    printf("[ %s ]\n", section);
 }
 
 void charts(user_profile user, int amount_of_plugs, average_profile average)
@@ -393,22 +384,24 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
 
     /* Average power consumption, calculates from all 5 appliances*/
     average_power_consumption = average_consumption(amount_of_plugs, average.appliances, user);
-    printf("The average power consumption in Denmark is %.4f\n", average_power_consumption);
+    printf("The power consumption of the average Dane is %.4f kWh pr. day.\n", average_power_consumption);
 
     /* Total user consumption calculates from the amount of plug.*/
     your_total_consumption = total_consumption(amount_of_plugs, user.plug);
-    printf("Your total power consumption is %.4f kWh\n", your_total_consumption);
+    printf("Your total power consumption is %.4f kWh today.\n", your_total_consumption);
 
     if (your_total_consumption > average_power_consumption)
-        printf("You use %.2f%% more power then the average public\n",
+        printf("You use %.2f%% more power then the average Dane.\n",
                (percent(your_total_consumption - average_power_consumption, average_power_consumption)));
     else
-        printf("You use %.2f%% less power then the average public\n",
+        printf("You use %.2f%% less power then the average Dane.\n",
                (percent(average_power_consumption - your_total_consumption, average_power_consumption)));
 
+    printf("\nYou have used approximately %.2f DKK on power today.\n", convert_power_to_cash(your_total_consumption));
+    printf("And have emitted %.2f kg of CO2.\n\n", convert_power_to_CO2(your_total_consumption));
+
+    print_section("Chart Displays Distribution of Appliances Total Power Consumption");
     bar_chart(user, your_total_consumption, amount_of_plugs);
-    printf("\n\nYou have used %.2f DKK on power\n", convert_power_to_cash(your_total_consumption));
-    printf("You have emitted %.2f kg of CO2\n", convert_power_to_CO2(your_total_consumption));
 }
 
 /* Function that calculate total consumption. The function is called with different arrays of the type appliance*/
@@ -461,7 +454,7 @@ double average_consumption(int amount, appliance array[], user_profile user)
             break;
 
         default:
-            printf("Error2\n");
+            printf("Error (average_consumption): ID not found (ID: %d)\n", user.plug[i].id);
         }
 
     return consumption;
