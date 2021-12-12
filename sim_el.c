@@ -155,8 +155,8 @@ void write_appliance_data_to_file(user_data user[], int days_simulated)
         for (x = 0; x < APPLIANCE_MAX; x++)
         {
 
-            fprintf(file, "     \"%s\": {\n", appliances_string[x + 1]);                                       /* Writes appliance name */
-            fprintf(file, "         \"appliance_id\": %d,\n", user[i].plug[x].id);                             /* Writes appliance ID */
+            fprintf(file, "     \"%s\": {\n", appliances_string[x + 1]);                                         /* Writes appliance name */
+            fprintf(file, "         \"appliance_id\": %d,\n", user[i].plug[x].id);                               /* Writes appliance ID */
             fprintf(file, "         \"power_consumption\": %.4f\n        }", user[i].plug[x].power_consumption); /* Writes appliance power consumption */
 
             /* If we are on the last element: don't end with comma as it is not the correct syntax for .json */
@@ -171,6 +171,7 @@ void write_appliance_data_to_file(user_data user[], int days_simulated)
     fprintf(file, "\n ]\n}"); /* Close curly bracket */
 
     fclose(file);
+    printf("Successfully simulated power consumption data for %d days.", days_simulated);
 }
 
 int calc_time(struct tm *current_time, int index, int days_simulated)

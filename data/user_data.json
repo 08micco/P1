@@ -1,234 +1,73 @@
 {
- "days_simulated": "10",
+ "days_simulated": "3",
  "date": [
-   "1638374442",
+   "1639158669",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.4226
+         "power_consumption": 0.2614
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.7205
+         "power_consumption": 0.4306
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 0.9660
+         "power_consumption": 0.9457
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.5417
+         "power_consumption": 0.5154
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.4867
+         "power_consumption": 0.0228
         }
     },
-   "1638460842",
+   "1639245069",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.3069
+         "power_consumption": 0.2913
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.6652
+         "power_consumption": 0.3863
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 0.7048
+         "power_consumption": 0.6930
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.5125
+         "power_consumption": 0.1213
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.0091
+         "power_consumption": 0.0750
         }
     },
-   "1638547242",
+   "1639331469",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.4390
+         "power_consumption": 0.1407
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.3914
+         "power_consumption": 0.3087
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 1.1319
+         "power_consumption": 0.9802
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.4464
+         "power_consumption": 0.1373
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.2221
-        }
-    },
-   "1638633642",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.2215
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.5828
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.9091
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.4538
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.2942
-        }
-    },
-   "1638720042",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.2543
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.4930
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.9755
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.3438
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.5635
-        }
-    },
-   "1638806442",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.3301
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.4138
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.8359
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.4858
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.3664
-        }
-    },
-   "1638892842",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.2083
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.6283
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.5769
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.3628
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.0157
-        }
-    },
-   "1638979242",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.2109
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.5373
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.9214
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.5291
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.3788
-        }
-    },
-   "1639065642",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.3406
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.5859
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 1.1150
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.4013
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.1530
-        }
-    },
-   "1639152042",
-    {
-     "microwave": {
-         "appliance_id": 1,
-         "power_consumption": 0.3546
-        },
-     "kettle": {
-         "appliance_id": 2,
-         "power_consumption": 0.7230
-        },
-     "oven": {
-         "appliance_id": 3,
-         "power_consumption": 0.6286
-        },
-     "refrigerator": {
-         "appliance_id": 4,
-         "power_consumption": 0.3767
-        },
-     "coffee_machine": {
-         "appliance_id": 5,
-         "power_consumption": 0.1021
+         "power_consumption": 0.2004
         }
     }
  ]
