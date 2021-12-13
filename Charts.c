@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include"Prototyper.h"
+#include "Prototyper.h"
 
 void charts(user_profile user, int amount_of_plugs, average_profile average)
 {
@@ -28,8 +28,6 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
     print_section("Chart Displays Distribution of Appliances Total Power Consumption");
     bar_chart(user, your_total_consumption, amount_of_plugs);
 }
-
-
 
 /* Bar chart over the user consumption*/
 void bar_chart(user_profile user, double consumption, int plug_amount)

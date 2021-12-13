@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structs.h"
-#include"Prototyper.h"
+#include "Prototyper.h"
 
 /* This function compares the power consumption of plugs with the average power consumption of appliances. */
 void compare_plugs(user_profile user, user_profile user_prev_avg, average_profile average, appliance *above_average_consumption,
@@ -99,7 +99,6 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
             printf("\nYou have the same power consumption today as the previous days.\n");
     }
 }
-
 
 /* if the user power consumtion is higher than the average for that appliance,
 it is placed into the array above_average_consumption. Otherwise places in below_average_consumption */

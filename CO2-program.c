@@ -7,6 +7,7 @@
 #include "Prototyper.h"
 #include "structs.h"
 
+
 /* Main program */
 int main(void)
 {

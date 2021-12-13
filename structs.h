@@ -8,7 +8,6 @@
 #define KWH_TO_CO2_KG KWH_TO_CO2_G / 1000 /* CO2 kg emmission pr 1 kWh production */
 #define PRINT_LINE_SIZE 96                /* Length of line to seperate text (must be even when divided by 2)*/
 
-
 enum appliances
 {
     microwave = 1,
@@ -19,8 +18,8 @@ enum appliances
 };
 typedef enum appliances appliances;
 
-char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "Coffee Machine"};
-char *appliances_string_lwr[APPLIANCE_MAX] = {"empty", "microwave", "kettle", "oven", "refrigerator", "coffee machine"};
+extern char *appliances_string[APPLIANCE_MAX];
+extern char *appliances_string_lwr[APPLIANCE_MAX];
 
 struct appliance
 {
@@ -42,6 +41,5 @@ struct average_profile
     appliance appliances[APPLIANCE_MAX];
 };
 typedef struct average_profile average_profile;
-
 
 #endif

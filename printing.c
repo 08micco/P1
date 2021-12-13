@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include"Prototyper.h"
+#include "Prototyper.h"
+
+char *appliances_string[APPLIANCE_MAX] = {"empty", "Microwave", "Kettle", "Oven", "Refrigerator", "Coffee Machine"};
+char *appliances_string_lwr[APPLIANCE_MAX] = {"empty", "microwave", "kettle", "oven", "refrigerator", "coffee machine"};
 
 /* Print a breakline */
 void print_break(void)
