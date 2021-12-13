@@ -68,8 +68,6 @@ json_t const *open_json_file_average(void);
 int parse_json_days_simulated(json_t const *);
 user_profile parse_json_user_data(user_profile, user_profile *, json_t const *, int, int, int *);
 average_profile parse_json_average_data(average_profile, json_t const *);
-
-/* double calc_difference_user_prev_avg(microwave, user, user_prev_avg); */
 void print_title(char[]);
 void print_section(char[]);
 double calc_prev_avg(user_profile, user_profile, int, int *);
@@ -298,7 +296,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         else if (is_smaller == 1)
             printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
         else
-            printf("\nYou have the same power consumption today as the previous days.\n", differnce);
+            printf("\nYou have the same power consumption today as the previous days.\n");
     }
 }
 
@@ -637,7 +635,7 @@ user_profile parse_json_user_data(user_profile user, user_profile *user_prev_avg
     json_t const *data_user = json_getProperty(json_user, "date");
     if (!data_user || JSON_ARRAY != json_getType(data_user))
     {
-        puts("Error (Parse Json User Data): No array found for \"date\"");
+        printf("Error (Parse Json User Data): No array found for \"date\"\n");
     }
 
     int j = 0;
