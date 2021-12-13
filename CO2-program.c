@@ -50,9 +50,9 @@ typedef struct average_profile average_profile;
 user_profile initialize_user_profile(user_profile, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
-void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *);
+void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *, int);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
-void print_percentage_of_average(int, int, double, double);
+void print_percentage_of_average(int, int, double, double, int, int);
 void print_tips(appliance[], appliance[], int, int);
 void print_switch(appliance[], int);
 void print_break(void);
@@ -68,9 +68,11 @@ json_t const *open_json_file_average(void);
 int parse_json_days_simulated(json_t const *);
 user_profile parse_json_user_data(user_profile, user_profile *, json_t const *, int, int, int *);
 average_profile parse_json_average_data(average_profile, json_t const *);
+
 /* double calc_difference_user_prev_avg(microwave, user, user_prev_avg); */
 void print_title(char[]);
 void print_section(char[]);
+double calc_prev_avg(user_profile, user_profile, int, int *);
 
 /* Main program */
 int main(void)
@@ -96,14 +98,15 @@ int main(void)
     /* Json file */
     json_t const *json_user = open_json_file_user();
     int days_simulated = parse_json_days_simulated(json_user);
-    printf("Registered data for %d days.\n", days_simulated);
+    printf("Registered data for %d day(s).\n", days_simulated);
     print_break();
     user = parse_json_user_data(user, &user_prev_avg, json_user, days_simulated, amount_of_plugs, &time);
     json_t const *json_average = open_json_file_average();
     average = parse_json_average_data(average, json_average);
 
     print_title("Comparison of Appliances");
-    compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
+    compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below, days_simulated);
+
     print_break();
 
     print_title("Overview of Your Power Usage");
@@ -117,7 +120,35 @@ int main(void)
     return EXIT_SUCCESS;
 }
 
+double calc_prev_avg(user_profile user, user_profile user_prev_avg, int amount_of_plugs, int *is_smaller)
+{
+    double avg_of_prev_avg = 0;
+    double avg_of_today = 0;
+    int i;
+    for (i = 0; i < amount_of_plugs; i++)
+    {
+        if (user.plug[i].id != 0)
+        {
+            avg_of_prev_avg += user_prev_avg.plug[user.plug[i].id].power_consumption;
+            avg_of_today += user.plug[i].power_consumption;
+        }
+    }
+    avg_of_prev_avg /= amount_of_plugs;
+    avg_of_today /= amount_of_plugs;
+
+    /*printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today);*/
+
+    if (avg_of_prev_avg < avg_of_today)
+        *is_smaller = 1;
+    else if (avg_of_prev_avg > avg_of_today)
+        *is_smaller = 0;
+    else
+        *is_smaller = -1;
+
+    return percent(avg_of_prev_avg - avg_of_today, avg_of_today);
+}
 /* User profile informations is set here */
+
 user_profile initialize_user_profile(user_profile user, int *plug_index)
 {
     int run = 1;
@@ -177,11 +208,33 @@ user_profile add_plug(user_profile user, int plug_index) /* Use the plug_index t
 
 /* This function compares the power consumption of plugs with the average power consumption of appliances. */
 void compare_plugs(user_profile user, user_profile user_prev_avg, average_profile average, appliance *above_average_consumption,
-                   appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below)
+                   appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below, int days_simulated)
 {
     int current_appliance;
     double appliance_differnce[APPLIANCE_MAX + 1];
     int i;
+    int min_field_width_appliance = 0;
+    int min_field_width_plug = 0;
+
+    for (i = 0; i < amount_of_plugs; i++)
+    {
+        if (min_field_width_appliance < strlen(appliances_string[microwave]))
+            min_field_width_appliance = strlen(appliances_string[microwave]);
+        if (min_field_width_appliance < strlen(appliances_string[kettle]))
+            min_field_width_appliance = strlen(appliances_string[kettle]);
+        if (min_field_width_appliance < strlen(appliances_string[oven]))
+            min_field_width_appliance = strlen(appliances_string[oven]);
+        if (min_field_width_appliance < strlen(appliances_string[refrigerator]))
+            min_field_width_appliance = strlen(appliances_string[refrigerator]);
+        if (min_field_width_appliance < strlen(appliances_string[coffee]))
+            min_field_width_appliance = strlen(appliances_string[coffee]);
+    }
+
+    if (amount_of_plugs >= 10)
+        min_field_width_plug = 2;
+    else
+        min_field_width_plug = 1;
+
     for (i = 0; i < amount_of_plugs; i++)
     {
         /* this switch-case is sorted after the id of the users plugs.
@@ -200,34 +253,52 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
             current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
+
             break;
 
         case oven:
             current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
+
             break;
 
         case refrigerator:
             current_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[refrigerator] = percent(user.plug[i].power_consumption, user_prev_avg.plug[refrigerator].power_consumption);
+
             break;
 
         case coffee:
             current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
+
             break;
         }
 
-        print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption);
+        print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption, min_field_width_appliance, min_field_width_plug);
     }
     printf("\n");
-    for (i = 0; i < amount_of_plugs; i++)
+    if (days_simulated > 1)
     {
-        if (user.plug[i].id != 0)
-            printf("Consumption of your %-14s on plug %2d today is %.2f%% compared to average of previous days.\n", appliances_string_lwr[user.plug[i].id], i + 1, appliance_differnce[user.plug[i].id]);
+        for (i = 0; i < amount_of_plugs; i++)
+        {
+            if (user.plug[i].id != 0)
+                printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n", min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_differnce[user.plug[i].id]);
+        }
+    }
+    int is_smaller;
+    double differnce = calc_prev_avg(user, user_prev_avg, amount_of_plugs, &is_smaller);
+    if (days_simulated > 1)
+    {
+        if (is_smaller == 0)
+            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+        else if (is_smaller == 1)
+            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+        else
+            printf("\nYou have the same power consumption today as the previous days.\n", differnce);
     }
 }
 
@@ -251,10 +322,10 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
 }
 
 /* Prints percentage of average consumption.*/
-void print_percentage_of_average(int i, int app, double user_cons, double average_cons)
+void print_percentage_of_average(int i, int app, double user_cons, double average_cons, int min_field_width_appliance, int min_field_width_plug)
 {
-    printf("Consumption of your %-14s on plug %2d is %7.4f kWh. This is %6.2lf%% of the average.\n",
-           appliances_string_lwr[app], i + 1, user_cons, percent(user_cons, average_cons));
+    printf("Consumption of your %-*s on plug %*d is %6.4f kWh. This is %6.2lf%% of the average Dane.\n", min_field_width_appliance,
+           appliances_string_lwr[app], min_field_width_plug, i + 1, user_cons, percent(user_cons, average_cons));
 }
 
 /* Prints tips on areas, where the users consumption is higher than average */
