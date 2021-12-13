@@ -1,73 +1,73 @@
 {
  "days_simulated": "3",
  "date": [
-   "1639206905",
+   "1639251709",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.2283
+         "power_consumption": 0.1367
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.4686
+         "power_consumption": 0.3139
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 0.8878
+         "power_consumption": 0.8164
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.2014
+         "power_consumption": 0.2010
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.2445
+         "power_consumption": 0.3355
         }
     },
-   "1639293305",
+   "1639338109",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.1760
+         "power_consumption": 0.1855
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.3016
+         "power_consumption": 0.4777
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 0.6528
+         "power_consumption": 0.8992
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.4898
+         "power_consumption": 0.2447
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.3958
+         "power_consumption": 0.2645
         }
     },
-   "1639379705",
+   "1639424509",
     {
      "microwave": {
          "appliance_id": 1,
-         "power_consumption": 0.1879
+         "power_consumption": 0.1479
         },
      "kettle": {
          "appliance_id": 2,
-         "power_consumption": 0.2672
+         "power_consumption": 0.3252
         },
      "oven": {
          "appliance_id": 3,
-         "power_consumption": 0.7098
+         "power_consumption": 0.5630
         },
      "refrigerator": {
          "appliance_id": 4,
-         "power_consumption": 0.1154
+         "power_consumption": 0.5429
         },
      "coffee_machine": {
          "appliance_id": 5,
-         "power_consumption": 0.1506
+         "power_consumption": 0.3846
         }
     }
  ]

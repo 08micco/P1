@@ -3,7 +3,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <sys/stat.h>
 
 #define APPLIANCE_MAX 5
 #define PLUGS_MAX 10
