@@ -50,7 +50,7 @@ typedef struct average_profile average_profile;
 user_profile initialize_user_profile(user_profile, int *);
 user_profile add_plug(user_profile, int);
 void compareFunction(user_profile, user_profile, appliance *);
-void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *);
+void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *, int);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, int, double, double, int, int);
 void print_tips(appliance[], appliance[], int, int);
@@ -105,16 +105,8 @@ int main(void)
     average = parse_json_average_data(average, json_average);
 
     print_title("Comparison of Appliances");
-    compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below);
-    int is_smaller;
-    double differnce = calc_prev_avg(user, user_prev_avg, amount_of_plugs, &is_smaller);
+    compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below, days_simulated);
 
-    if (is_smaller == 1)
-        printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", differnce);
-    else if (is_smaller == 0)
-        printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
-    else
-        printf("\nYou have the same power consumption today as the previous days.\n", differnce);
     print_break();
 
     print_title("Overview of Your Power Usage");
@@ -144,7 +136,7 @@ double calc_prev_avg(user_profile user, user_profile user_prev_avg, int amount_o
     avg_of_prev_avg /= amount_of_plugs;
     avg_of_today /= amount_of_plugs;
 
-    printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today);
+    /*printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today);*/
 
     if (avg_of_prev_avg < avg_of_today)
         *is_smaller = 1;
@@ -216,7 +208,7 @@ user_profile add_plug(user_profile user, int plug_index) /* Use the plug_index t
 
 /* This function compares the power consumption of plugs with the average power consumption of appliances. */
 void compare_plugs(user_profile user, user_profile user_prev_avg, average_profile average, appliance *above_average_consumption,
-                   appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below)
+                   appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below, int days_simulated)
 {
     int current_appliance;
     double appliance_differnce[APPLIANCE_MAX + 1];
@@ -289,11 +281,24 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption, min_field_width_appliance, min_field_width_plug);
     }
     printf("\n");
-
-    for (i = 0; i < amount_of_plugs; i++)
+    if (days_simulated > 1)
     {
-        if (user.plug[i].id != 0)
-            printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n", min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_differnce[user.plug[i].id]);
+        for (i = 0; i < amount_of_plugs; i++)
+        {
+            if (user.plug[i].id != 0)
+                printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n", min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_differnce[user.plug[i].id]);
+        }
+    }
+    int is_smaller;
+    double differnce = calc_prev_avg(user, user_prev_avg, amount_of_plugs, &is_smaller);
+    if (days_simulated > 1)
+    {
+        if (is_smaller == 0)
+            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+        else if (is_smaller == 1)
+            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+        else
+            printf("\nYou have the same power consumption today as the previous days.\n", differnce);
     }
 }
 
