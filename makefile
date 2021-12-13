@@ -1,29 +1,16 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -pedantic
 
-src = $(wildcard *.c)
-src += $(wildcard ../*.c)
-obj = $(src:.c=.o)
-dep = $(obj:.o=.d) 
+LDFLAGS 	= structs.h Prototyper.h
+OBJFILES 	= CO2-program.o Tips.o User_profile.o printing.o jason-functions.o comapre.o Charts.o calculation.o tiny-json/tiny-json.o
+TARGET		= CO2-program.exe
 
-.PHONY: build all clean
+all: $(TARGET)
 
-build: CO2-program.exe
+$(TARGET): $(OBJFILES)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 
-all: clean build
+clean:
+	rm -f $(OBJFILES) $(TARGET) *~
 
-clean::
-	rm -rf $(dep)
-	rm -rf $(obj)
-	rm -rf *.exe
 
-	
-CO2-program.exe: CO2-program.o tiny-json/tiny-json.o
-	gcc $(CFLAGS) -o $@ $^
-
-	
-
--include $(dep)
-
-%.d: %.c
-	$(CC) $(CFLAGS) $< -MM -MT $(@:.d=.o) >$@

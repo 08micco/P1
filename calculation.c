@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include"Prototyper.h"
+#include "Prototyper.h"
 
 /* Function that calculate total consumption. The function is called with different arrays of the type appliance*/
 double average_consumption(int amount, appliance array[], user_profile user)
@@ -94,3 +94,4 @@ void print_percentage_of_average(int i, int app, double user_cons, double averag
 {
     printf("Consumption of your %-*s on plug %*d is %6.4f kWh. This is %6.2lf%% of the average Dane.\n", min_field_width_appliance,
            appliances_string_lwr[app], min_field_width_plug, i + 1, user_cons, percent(user_cons, average_cons));
+}
