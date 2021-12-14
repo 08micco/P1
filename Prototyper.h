@@ -25,8 +25,8 @@ user_profile add_plug(user_profile, int);
 void compare_plugs(user_profile, user_profile, average_profile, appliance *, appliance *, int, int *, int *, int);
 int place_in_correct_array(int, double, double, appliance *, appliance *, int **, int **);
 void print_percentage_of_average(int, int, double, double, int, int);
-void print_tips(appliance[], appliance[], int, int);
-void print_switch(appliance[], int);
+void initialize_tips(appliance[], appliance[], int, int);
+void print_tips(appliance[], int, int);
 double calc_prev_avg(user_profile, user_profile, int, int *);
 
 #endif
