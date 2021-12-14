@@ -8,8 +8,9 @@ double average_consumption(int amount, appliance array[], user_profile user)
 {
     double consumption = 0;
     int i, micro_yes = 0, kettle_yes = 0, oven_yes = 0, refrigerator_yes = 0, coffee_yes = 0;
+    /* This loop will calculate the average power consumption in the kitchen, based of off the appliances the user has selected.
+       Each appliance can only be added once to the average, no matter the users amount. */
     for (i = 0; i < amount; i++)
-
         switch (user.plug[i].id)
         {
         case microwave:
@@ -62,6 +63,7 @@ double average_consumption(int amount, appliance array[], user_profile user)
 
 double total_consumption(int amount, appliance array[])
 {
+    /* This function calculates the users total power consumption, and assembles the data in one variable. */
     double tot_con = 0;
     int i;
     for (i = 0; i < amount; i++)
@@ -70,20 +72,19 @@ double total_consumption(int amount, appliance array[])
     return tot_con;
 }
 
-/* Stor på a, lille på b, hvis du går efter percent af
-Og omvent hvis du går efter hvor meget b er større end a */
+/* A simple function for calculating percentage. */
 double percent(double a, double b)
 {
     return (a / b) * 100;
 }
 
-/* Har en kilde på KWH_TO_DKK konstanten */
+/* A simple function for calculating cost of power. */
 double convert_power_to_cash(double power)
 {
     return power * KWH_TO_DKK;
 }
 
-/* Bliver beregnet i kg. Har også en kilde på det.  */
+/* A simple function for calculating emission in kg, caused by power usage. */
 double convert_power_to_CO2(double power)
 {
     return power * KWH_TO_CO2_KG;

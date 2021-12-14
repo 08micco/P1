@@ -23,6 +23,7 @@ void initialize_tips(appliance above_average_consumption[], appliance below_aver
 
 void print_tips(appliance consumption[], int amount, int general)
 {
+    /* Here, *Appliance*_yes is bools making sure tips wont print twice for the same appliance. */
     int i, micro_yes = 0, kettle_yes = 0, oven_yes = 0, refridgerator_yes = 0, coffee_yes = 0;
     char tips_microwave[500] = "Microwave:\nOnly use the microwave for smaller meals.\n";
     char tips_kettle[500] = "Kettle:\nMake sure you don't boil more water than needed.\n";
@@ -30,6 +31,8 @@ void print_tips(appliance consumption[], int amount, int general)
     char tips_refrigerator[500] = "Refrigerator:\nThaw frozen food in the refridgerator to help it keep a cold temperature.\n";
     char tips_coffee[500] = "Coffee Machine:\nDon't make more coffee than you are going to drink.\nRemember to remove calcium from your machine.\n";
     char tips_general[500] = "General Tips:\nMake sure appliances, pots and more is properly sealed, as to not waste the heat or cold.\n";
+
+    /* This loop uses a switch to check if certain appliances needs to have their tips printed. */
     for (i = 0; i < amount; i++)
     {
         switch (consumption[i].id)

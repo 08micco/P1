@@ -25,6 +25,7 @@ int main(void)
     int amount_of_plugs = 0;
     int time;
 
+    /* Line 30 collects the manual user input of appliances and plugs. */
     print_title("Create Your Home Profile");
     user = initialize_user_profile(user, &amount_of_plugs);
 
@@ -38,14 +39,17 @@ int main(void)
     average = parse_json_average_data(average, json_average);
 
     print_title("Comparison of Appliances");
+    /* Here, compare_plugs is called to calculate and compare user data to dataset of average use. */
     compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below, days_simulated);
 
     print_break();
 
+    /* Here, the function used to display power usage in charts is called. */
     print_title("Overview of Your Power Usage");
     charts(user, amount_of_plugs, average);
     print_break();
 
+    /* Here, the function used to display tips for the user is called. */
     print_title("Tips To Improve Your CO2 Footprint");
     initialize_tips(above_average_consumption, below_average_consumption, index_above, index_below);
     print_break();

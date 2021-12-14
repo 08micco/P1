@@ -23,6 +23,7 @@ void print_title(char title[])
     int line2_length = (double)floor((PRINT_LINE_SIZE - title_length - 2) / 2); /* Calculates the line size for the right side of title */
     int i;
 
+    /* Prints output-titles in the format of ====== Title ======= */
     printf("\n");
     for (i = 0; i < line1_length; i++)
         printf("=");
