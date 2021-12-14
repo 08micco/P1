@@ -28,14 +28,22 @@ int main(void)
     print_title("Create Your Home Profile");
     user = initialize_user_profile(user, &amount_of_plugs);
 
+
     /* Json file */
     json_t const *json_user = open_json_file_user();
     int days_simulated = parse_json_days_simulated(json_user);
-    printf("Registered data for %d day(s).\n", days_simulated);
-    print_break();
     user = parse_json_user_data(user, &user_prev_avg, json_user, days_simulated, amount_of_plugs, &time);
     json_t const *json_average = open_json_file_average();
     average = parse_json_average_data(average, json_average);
+    /* Prints time */
+    time_t date_time_t = time;
+    struct tm *date_time_struct = localtime(&date_time_t);
+    char time_string[20];
+    strftime(time_string, 20, "%d-%m-%Y", date_time_struct);
+    printf("Date: %s:\n", time_string);  
+    /* The amount of data registered */
+    printf("Registered data for %d day(s).\n", days_simulated);
+    print_break();
 
     print_title("Comparison of Appliances");
     compare_plugs(user, user_prev_avg, average, above_average_consumption, below_average_consumption, amount_of_plugs, &index_above, &index_below, days_simulated);
