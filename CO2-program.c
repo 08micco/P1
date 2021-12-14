@@ -7,7 +7,6 @@
 #include "Prototyper.h"
 #include "structs.h"
 
-
 /* Main program */
 int main(void)
 {
@@ -48,7 +47,7 @@ int main(void)
     print_break();
 
     print_title("Tips To Improve Your CO2 Footprint");
-    print_tips(above_average_consumption, below_average_consumption, index_above, index_below);
+    initialize_tips(above_average_consumption, below_average_consumption, index_above, index_below);
     print_break();
 
     return EXIT_SUCCESS;
