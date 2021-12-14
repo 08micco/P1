@@ -88,7 +88,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         }
     }
     int is_smaller;
-    double differnce = calc_prev_avg(user, user_prev_avg, amount_of_plugs, &is_smaller);
+    double differnce = calculate_prevage_average(user, user_prev_avg, amount_of_plugs, &is_smaller);
     if (days_simulated > 1)
     {
         if (is_smaller == 0)
@@ -119,7 +119,7 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
     return id;
 }
 
-double calc_prev_avg(user_profile user, user_profile user_prev_avg, int amount_of_plugs, int *is_smaller)
+double calculate_prevage_average(user_profile user, user_profile user_prev_avg, int amount_of_plugs, int *is_smaller)
 {
     double avg_of_prev_avg = 0;
     double avg_of_today = 0;
