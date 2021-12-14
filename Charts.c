@@ -15,6 +15,8 @@ void charts(user_profile user, int amount_of_plugs, average_profile average)
     your_total_consumption = total_consumption(amount_of_plugs, user.plug);
     printf("Your total power consumption is %.4f kWh today.\n", your_total_consumption);
 
+    /* This if/else will print the percentage of user-power consumption compared to the average power consumption.
+       And will tell you how much money it cost and Co2 it emitted, and will display charts of the data. */
     if (your_total_consumption > average_power_consumption)
         printf("You use %.2f%% more power then the average Dane.\n",
                (percent(your_total_consumption - average_power_consumption, average_power_consumption)));

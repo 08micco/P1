@@ -8,6 +8,8 @@
 #define PLUGS_MAX 10
 //#define DAYS_SIMULATED 18
 
+/* This enum will associate the following words with the numbers 1, 2, 3, 4 and 5, 
+   which will make the code much more readable throughout the program. */
 enum appliances
 {
     microwave = 1,
@@ -18,6 +20,8 @@ enum appliances
 };
 typedef enum appliances appliances;
 
+/* Here, an array-pointer of strings have been made with 6 array-slots, the first being "empty", 
+   so the rest can align with the previously initiated enums. */
 char *appliances_string[APPLIANCE_MAX + 1] = {"empty", "microwave", "kettle",
                                               "oven", "refrigerator", "coffee_machine"};
 
@@ -50,6 +54,7 @@ int main()
 {
     int days_simulated;
 
+    /* The user is asked for how many days they wish to simulate data over, and the input is restricted so <100 is set to 100, and >1 is set to 1. */
     printf("Power Plug Simulator\n\nEnter amount of days you want to simulate data for (MIN: 1, MAX: 100): ");
     scanf(" %d", &days_simulated);
     if (days_simulated > 100)
