@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include "Prototyper.h"
+#include "prototyper.h"
 
 /* Prints tips on areas, where the users consumption is higher than average */
 void initialize_tips(appliance above_average_consumption[], appliance below_average_consumption[], int index_above, int index_below)

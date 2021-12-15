@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include "Prototyper.h"
+#include "prototyper.h"
 
 user_profile initialize_user_profile(user_profile user, int *plug_index)
 {
@@ -19,7 +19,7 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
 
         printf("Add one more appliance?:\n1 | Yes\n2 | No\nSelect option: ");
         scanf("%d", &scan_input);
-        
+
         print_break();
         if (scan_input == 1)
         {
