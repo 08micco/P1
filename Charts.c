@@ -37,7 +37,7 @@ void bar_chart(user_profile user, double consumption, int plug_amount)
     int i, j;
     for (i = 0; i < plug_amount; i++)
     {
-        printf("\n%s \n", appliances_string[(appliances)user.plug[i].id]);
+        printf("\n %s on plug %d \n", appliances_string[(appliances)user.plug[i].id], (i+1));
 
         for (j = 0; j < percent(user.plug[i].power_consumption, consumption); j++)
             printf("|");

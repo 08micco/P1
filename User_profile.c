@@ -34,11 +34,9 @@ user_profile initialize_user_profile(user_profile user, int *plug_index)
         else
             run = 0;
     }
-    print_break();
 
     *plug_index += 1;                                                                             /* Plug_index starts on 0. To get the right amount of plug further in the program, it is raised by one. */
     printf("Added %d plug(s) to your household of size %d.\n", *plug_index, user.household_size); /* Skal slettes senere */
-    print_break();
     return user;
 }
 

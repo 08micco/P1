@@ -27,6 +27,6 @@ int place_in_correct_array(int, double, double, appliance *, appliance *, int **
 void print_percentage_of_average(int, int, double, double, int, int);
 void initialize_tips(appliance[], appliance[], int, int);
 void print_tips(appliance[], int, int);
-double calc_prev_avg(user_profile, user_profile, int, int *);
+double calculate_prevage_average(user_profile, user_profile, int, int *);
 
 #endif
