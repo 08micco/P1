@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include "Prototyper.h"
+#include "prototyper.h"
 
 void charts(user_profile user, int amount_of_plugs, average_profile average)
 {
@@ -37,7 +37,7 @@ void bar_chart(user_profile user, double consumption, int plug_amount)
     int i, j;
     for (i = 0; i < plug_amount; i++)
     {
-        printf("\n %s on plug %d \n", appliances_string[(appliances)user.plug[i].id], (i+1));
+        printf("\n %s on plug %d \n", appliances_string[(appliances)user.plug[i].id], (i + 1));
 
         for (j = 0; j < percent(user.plug[i].power_consumption, consumption); j++)
             printf("|");

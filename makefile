@@ -4,10 +4,10 @@ CFLAGS = -std=c99 -Wall -pedantic
 dep = $(obj:.o=.d) 
 
 LDFLAGS 	= 
-OBJFILES 	= CO2-program.o Tips.o User_profile.o printing.o jason-functions.o compare.o Charts.o calculation.o tiny-json/tiny-json.o
-TARGET		= CO2-program.exe
+OBJFILES 	= main_program.o tips.o initialize_user_profile.o printing.o json_functions.o compare.o charts.o calculation.o tiny-json/tiny-json.o
+TARGET		= main_program.exe
 
-all: $(TARGET) power_simulation.exe
+all: $(TARGET) data_simulator.exe
 
 $(TARGET): $(OBJFILES)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
@@ -15,7 +15,7 @@ $(TARGET): $(OBJFILES)
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~ *.exe $(dep) *.o *.d
 
-power_simulation.exe: power_simulation.o
+data_simulator.exe: data_simulator.o
 	gcc $(CFLAGS) -o $@ $^
 
 	

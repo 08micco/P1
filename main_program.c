@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include "tiny-json/tiny-json.h"
-#include "Prototyper.h"
+#include "prototyper.h"
 #include "structs.h"
 
 /* Main program */
@@ -29,7 +29,6 @@ int main(void)
     print_title("Create Your Home Profile");
     user = initialize_user_profile(user, &amount_of_plugs);
 
-
     /* Json file */
     json_t const *json_user = open_json_file_user();
     int days_simulated = parse_json_days_simulated(json_user);
@@ -41,7 +40,7 @@ int main(void)
     struct tm *date_time_struct = localtime(&date_time_t);
     char time_string[20];
     strftime(time_string, 20, "%d-%m-%Y", date_time_struct);
-    printf("Date: %s:\n", time_string);  
+    printf("Date: %s:\n", time_string);
     /* The amount of data registered */
     printf("Registered data for %d day(s).\n", days_simulated);
     print_break();

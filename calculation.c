@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structs.h"
-#include "Prototyper.h"
+#include "prototyper.h"
 
 /* Function that calculate total consumption. The function is called with different arrays of the type appliance*/
 double average_consumption(int amount, appliance array[], user_profile user)
