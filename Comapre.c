@@ -14,25 +14,42 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     int min_field_width_appliance = 0;
     int min_field_width_plug = 0;
 
-    for (i = 0; i < amount_of_plugs; i++)
-    {
-        if (min_field_width_appliance < strlen(appliances_string[microwave]))
-            min_field_width_appliance = strlen(appliances_string[microwave]);
-        if (min_field_width_appliance < strlen(appliances_string[kettle]))
-            min_field_width_appliance = strlen(appliances_string[kettle]);
-        if (min_field_width_appliance < strlen(appliances_string[oven]))
-            min_field_width_appliance = strlen(appliances_string[oven]);
-        if (min_field_width_appliance < strlen(appliances_string[refrigerator]))
-            min_field_width_appliance = strlen(appliances_string[refrigerator]);
-        if (min_field_width_appliance < strlen(appliances_string[coffee]))
-            min_field_width_appliance = strlen(appliances_string[coffee]);
-    }
-
     if (amount_of_plugs >= 10)
         min_field_width_plug = 2;
     else
         min_field_width_plug = 1;
 
+    for (i = 0; i < amount_of_plugs; i++)
+    {
+        /* Finds the minimum field width for appliance string */
+        switch (user.plug[i].id)
+        {
+        case microwave:
+            if (min_field_width_appliance < strlen(appliances_string[microwave]))
+                min_field_width_appliance = strlen(appliances_string[microwave]);
+            break;
+
+        case kettle:
+            if (min_field_width_appliance < strlen(appliances_string[kettle]))
+                min_field_width_appliance = strlen(appliances_string[kettle]);
+            break;
+
+        case oven:
+            if (min_field_width_appliance < strlen(appliances_string[oven]))
+                min_field_width_appliance = strlen(appliances_string[oven]);
+            break;
+
+        case refrigerator:
+            if (min_field_width_appliance < strlen(appliances_string[refrigerator]))
+                min_field_width_appliance = strlen(appliances_string[refrigerator]);
+            break;
+
+        case coffee:
+            if (min_field_width_appliance < strlen(appliances_string[coffee]))
+                min_field_width_appliance = strlen(appliances_string[coffee]);
+            break;
+        }
+    }
     for (i = 0; i < amount_of_plugs; i++)
     {
         /* this switch-case is sorted after the id of the users plugs.
@@ -44,41 +61,37 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
 
             appliance_differnce[microwave] = percent(user.plug[i].power_consumption, user_prev_avg.plug[microwave].power_consumption);
-
             break;
 
         case kettle:
             current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
-
             break;
 
         case oven:
             current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
-
             break;
 
         case refrigerator:
             current_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[refrigerator] = percent(user.plug[i].power_consumption, user_prev_avg.plug[refrigerator].power_consumption);
-
             break;
 
         case coffee:
             current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
             appliance_differnce[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
-
             break;
         }
 
         print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption, min_field_width_appliance, min_field_width_plug);
     }
     printf("\n");
+
     if (days_simulated > 1)
     {
         for (i = 0; i < amount_of_plugs; i++)
@@ -135,14 +148,21 @@ double calculate_prevage_average(user_profile user, user_profile user_prev_avg, 
     avg_of_prev_avg /= amount_of_plugs;
     avg_of_today /= amount_of_plugs;
 
-    /*printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today);*/
+    /*     printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today); */
 
     if (avg_of_prev_avg < avg_of_today)
+    {
         *is_smaller = 1;
+        return percent(avg_of_today - avg_of_prev_avg, avg_of_today);
+    }
     else if (avg_of_prev_avg > avg_of_today)
+    {
         *is_smaller = 0;
+        return percent(avg_of_prev_avg - avg_of_today, avg_of_prev_avg);
+    }
     else
+    {
         *is_smaller = -1;
-
-    return percent(avg_of_prev_avg - avg_of_today, avg_of_today);
+        return 0;
+    }
 }
