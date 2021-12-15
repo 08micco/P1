@@ -18,7 +18,7 @@ json_t const *open_json_file_user(void)
         fseek(fp_user, 0, SEEK_SET);
         str_user = malloc(length_user);
         if (str_user)
-            fread(str_user, 1, length_user, fp_user);
+            fread(str_user, sizeof(char), length_user, fp_user);
     }
     fclose(fp_user);
     /* Create json */
@@ -44,7 +44,7 @@ json_t const *open_json_file_average(void)
         fseek(fp_average, 0, SEEK_SET);
         str_average = malloc(length_average);
         if (str_average)
-            fread(str_average, 1, length_average, fp_average);
+            fread(str_average, sizeof(char), length_average, fp_average);
     }
     fclose(fp_average);
     /* Create json */
