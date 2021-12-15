@@ -4,7 +4,7 @@
 #include "structs.h"
 #include "Prototyper.h"
 
-/* This function compares the power consumption of plugs with the average power consumption of appliances. */
+/* This function perform comparisons on the power consumption of plugs. They will be broken down as they are called */
 void compare_plugs(user_profile user, user_profile user_prev_avg, average_profile average, appliance *above_average_consumption,
                    appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below, int days_simulated)
 {
@@ -14,14 +14,16 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     int min_field_width_appliance = 0;
     int min_field_width_plug = 0;
 
+
+    /* if there are more than 10 plugs - set minimum field with to 2 */
     if (amount_of_plugs >= 10)
         min_field_width_plug = 2;
     else
         min_field_width_plug = 1;
 
+    /* Adjusts minimum field with according to the amount of characters in each appliance_string */
     for (i = 0; i < amount_of_plugs; i++)
     {
-        /* Finds the minimum field width for appliance string */
         switch (user.plug[i].id)
         {
         case microwave:
@@ -53,26 +55,32 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     for (i = 0; i < amount_of_plugs; i++)
     {
         /* this switch-case is sorted after the id of the users plugs.
-        current_appliances is signed the int value of the current case. E.g. in case microwave: current_appliances is assigned microwave */
+        current_appliances is signed the int value of the current case. E.g. in case microwave: current_appliances is assigned microwave
+
+        appliance_difference is used to print percentage later*/
         switch (user.plug[i].id)
         {
         case microwave:
             current_appliance = place_in_correct_array(microwave, user.plug[i].power_consumption, average.appliances[microwave].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
-
             appliance_differnce[microwave] = percent(user.plug[i].power_consumption, user_prev_avg.plug[microwave].power_consumption);
+
             break;
 
         case kettle:
             current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+
             appliance_differnce[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
+
             break;
 
         case oven:
             current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+
             appliance_differnce[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
+
             break;
 
         case refrigerator:
@@ -84,12 +92,17 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         case coffee:
             current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
+
             appliance_differnce[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
+
             break;
         }
 
+        /* prints percentage of average on current appliance once for iteration of the for-loop. */
         print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption, min_field_width_appliance, min_field_width_plug);
     }
+
+    /* prints the percent-comparison between user current consumption and the average of their previous*/
     printf("\n");
 
     if (days_simulated > 1)
@@ -97,17 +110,20 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         for (i = 0; i < amount_of_plugs; i++)
         {
             if (user.plug[i].id != 0)
-                printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n", min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_differnce[user.plug[i].id]);
+                printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n",
+                       min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_difference[user.plug[i].id]);
         }
     }
     int is_smaller;
-    double differnce = calculate_prevage_average(user, user_prev_avg, amount_of_plugs, &is_smaller);
+
+    /* prints whether your overall consumption is higher or lower than previously */
+    double differnce = calculate_previous_average(user, user_prev_avg, amount_of_plugs, &is_smaller);
     if (days_simulated > 1)
     {
         if (is_smaller == 0)
-            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", difference);
         else if (is_smaller == 1)
-            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", difference);
         else
             printf("\nYou have the same power consumption today as the previous days.\n");
     }
@@ -132,7 +148,10 @@ int place_in_correct_array(int id, double user_consumption, double average_consu
     return id;
 }
 
-double calculate_prevage_average(user_profile user, user_profile user_prev_avg, int amount_of_plugs, int *is_smaller)
+
+/* finds average of all power consumptions in user_prev_avg. returns percentage of the difference between previous consumption and current consumption*/
+
+double calculate_previous_average(user_profile user, user_profile user_prev_avg, int amount_of_plugs, int *is_smaller)
 {
     double avg_of_prev_avg = 0;
     double avg_of_today = 0;
@@ -148,7 +167,6 @@ double calculate_prevage_average(user_profile user, user_profile user_prev_avg, 
     avg_of_prev_avg /= amount_of_plugs;
     avg_of_today /= amount_of_plugs;
 
-    /*     printf("AVG of PREV: %f   |   AVG of TODAY: %f\n", avg_of_prev_avg, avg_of_today); */
 
     if (avg_of_prev_avg < avg_of_today)
     {
