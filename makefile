@@ -4,7 +4,7 @@ CFLAGS = -std=c99 -Wall -pedantic
 dep = $(obj:.o=.d) 
 
 LDFLAGS 	= 
-OBJFILES 	= CO2-program.o Tips.o User_profile.o printing.o jason-functions.o comapre.o Charts.o calculation.o tiny-json/tiny-json.o
+OBJFILES 	= CO2-program.o Tips.o User_profile.o printing.o jason-functions.o compare.o Charts.o calculation.o tiny-json/tiny-json.o
 TARGET		= CO2-program.exe
 
 all: $(TARGET) power_simulation.exe
