@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "structs.h"
-#include "tiny-json/tiny-json.h"
+#include "../tiny-json/tiny-json.h"
 
 double average_consumption(int, appliance[], user_profile);
 double total_consumption(int, appliance[]);

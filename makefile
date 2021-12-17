@@ -4,7 +4,7 @@ CFLAGS = -std=c99 -Wall -pedantic
 dep = $(obj:.o=.d) 
 
 LDFLAGS 	= 
-OBJFILES 	= main_program.o tips.o initialize_user_profile.o printing.o json_functions.o compare.o charts.o calculation.o tiny-json/tiny-json.o
+OBJFILES 	= main_program.o functions/tips.o functions/initialize_user_profile.o functions/printing.o functions/json_functions.o functions/compare.o functions/charts.o functions/calculation.o tiny-json/tiny-json.o
 TARGET		= main_program.exe
 
 all: $(TARGET) data_simulator.exe

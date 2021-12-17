@@ -4,8 +4,8 @@
 #include <string.h>
 #include <time.h>
 #include "tiny-json/tiny-json.h"
-#include "prototyper.h"
-#include "structs.h"
+#include "functions/prototyper.h"
+#include "functions/structs.h"
 
 /* Main program */
 int main(void)
