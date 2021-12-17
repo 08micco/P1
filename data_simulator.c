@@ -6,7 +6,6 @@
 
 #define APPLIANCE_MAX 5
 #define PLUGS_MAX 10
-//#define DAYS_SIMULATED 18
 
 /* This enum will associate the following words with the numbers 1, 2, 3, 4 and 5, 
    which will make the code much more readable throughout the program. */
@@ -63,10 +62,9 @@ int main()
         days_simulated = 1;
 
     user_data user[days_simulated];
-    srand(time(NULL)); /* Skal den være her??? */
+    srand(time(NULL));
 
     /* Min and max values for each appliance */
-    /* Warning ved gcc -ansi -Wall -pedantic */
     double min_max_appliances[APPLIANCE_MAX * 2] = {
         /* Microwave */
         0.0743,
@@ -88,7 +86,6 @@ int main()
     for (i = 0; i < days_simulated; i++)
     {
         user[i] = initialize_user_data(user[i], min_max_appliances);
-        /* print_data(user[i]); */
     }
 
     write_appliance_data_to_file(user, days_simulated);
@@ -123,7 +120,6 @@ user_data initialize_user_data(user_data data, double min_max_appliances[])
 /* Generates a random number between two doubles */
 double random_num(double max, double min)
 {
-    /* Den returnerer ik et tal mellem min og max ved køleskabet??? */
     return (rand() / (RAND_MAX / (max - min))) + min;
 }
 
@@ -132,7 +128,7 @@ double random_num(double max, double min)
 void write_appliance_data_to_file(user_data user[], int days_simulated)
 {
     FILE *file;
-    int i, x; /* Days er midlertidig */
+    int i, x;
 
     time_t now = time(NULL);
     struct tm *current_time = localtime(&now);
@@ -151,7 +147,7 @@ void write_appliance_data_to_file(user_data user[], int days_simulated)
     fprintf(file, "\n \"date\": [");
 
     /* For dates */
-    for (i = 0; i < days_simulated /* DATES */; i++)
+    for (i = 0; i < days_simulated; i++)
     {
         fprintf(file, "\n   \"%d\",\n    {\n", calc_time(current_time, i + 1, days_simulated)); /* Date */
 
@@ -181,7 +177,6 @@ void write_appliance_data_to_file(user_data user[], int days_simulated)
 int calc_time(struct tm *current_time, int index, int days_simulated)
 {
     time_t new_time = mktime(current_time) - ((days_simulated - index) * (60 * 60 * 24));
-    /* printf("\ntime: %d\n", new_time); */
 
     return new_time;
 }
