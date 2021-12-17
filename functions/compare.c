@@ -140,13 +140,13 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
     int is_smaller;
 
     /* prints whether your overall consumption is higher or lower than previously */
-    double differnce = calculate_previous_average(user, user_prev_avg, amount_of_plugs, &is_smaller);
+    double difference = calculate_previous_average(user, user_prev_avg, amount_of_plugs, &is_smaller);
     if (days_simulated > 1)
     {
         if (is_smaller == 0)
-            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+            printf("\nYou have decreased your power consumption today by %.2f%% compared to previous days.\n", difference);
         else if (is_smaller == 1)
-            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", differnce);
+            printf("\nYou have increased your power consumption today by %.2f%% compared to previous days.\n", difference);
         else
             printf("\nYou have the same power consumption today as the previous days.\n");
     }
