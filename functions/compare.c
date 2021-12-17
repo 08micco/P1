@@ -9,7 +9,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
                    appliance *below_average_consumption, int amount_of_plugs, int *index_above, int *index_below, int days_simulated)
 {
     int current_appliance;
-    double appliance_differnce[APPLIANCE_MAX + 1];
+    double appliance_difference[APPLIANCE_MAX + 1];
     double your_total_consumption, average_power_consumption;
     int i;
     int min_field_width_appliance = 0;
@@ -66,7 +66,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         case microwave:
             current_appliance = place_in_correct_array(microwave, user.plug[i].power_consumption, average.appliances[microwave].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
-            appliance_differnce[microwave] = percent(user.plug[i].power_consumption, user_prev_avg.plug[microwave].power_consumption);
+            appliance_difference[microwave] = percent(user.plug[i].power_consumption, user_prev_avg.plug[microwave].power_consumption);
 
             break;
 
@@ -74,7 +74,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
             current_appliance = place_in_correct_array(kettle, user.plug[i].power_consumption, average.appliances[kettle].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
 
-            appliance_differnce[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
+            appliance_difference[kettle] = percent(user.plug[i].power_consumption, user_prev_avg.plug[kettle].power_consumption);
 
             break;
 
@@ -82,21 +82,21 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
             current_appliance = place_in_correct_array(oven, user.plug[i].power_consumption, average.appliances[oven].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
 
-            appliance_differnce[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
+            appliance_difference[oven] = percent(user.plug[i].power_consumption, user_prev_avg.plug[oven].power_consumption);
 
             break;
 
         case refrigerator:
             current_appliance = place_in_correct_array(refrigerator, user.plug[i].power_consumption, average.appliances[refrigerator].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
-            appliance_differnce[refrigerator] = percent(user.plug[i].power_consumption, user_prev_avg.plug[refrigerator].power_consumption);
+            appliance_difference[refrigerator] = percent(user.plug[i].power_consumption, user_prev_avg.plug[refrigerator].power_consumption);
             break;
 
         case coffee:
             current_appliance = place_in_correct_array(coffee, user.plug[i].power_consumption, average.appliances[coffee].power_consumption,
                                                        above_average_consumption, below_average_consumption, &index_above, &index_below);
 
-            appliance_differnce[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
+            appliance_difference[coffee] = percent(user.plug[i].power_consumption, user_prev_avg.plug[coffee].power_consumption);
 
             break;
         }
@@ -134,7 +134,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         {
             if (user.plug[i].id != 0)
                 printf("Consumption of your %-*s on plug %*d today is %6.2f%% compared to average of previous days.\n",
-                       min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_differnce[user.plug[i].id]);
+                       min_field_width_appliance, appliances_string_lwr[user.plug[i].id], min_field_width_plug, i + 1, appliance_difference[user.plug[i].id]);
         }
     }
     int is_smaller;
