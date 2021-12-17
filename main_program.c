@@ -40,7 +40,7 @@ int main(void)
     struct tm *date_time_struct = localtime(&date_time_t);
     char time_string[20];
     strftime(time_string, 20, "%d-%m-%Y", date_time_struct);
-    printf("Date: %s:\n", time_string);
+    printf("Date: %s.\n", time_string);
     /* The amount of data registered */
     printf("Registered data for %d day(s).\n", days_simulated);
     print_break();

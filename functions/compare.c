@@ -10,6 +10,7 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
 {
     int current_appliance;
     double appliance_differnce[APPLIANCE_MAX + 1];
+    double your_total_consumption, average_power_consumption;
     int i;
     int min_field_width_appliance = 0;
     int min_field_width_plug = 0;
@@ -51,6 +52,9 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
             break;
         }
     }
+
+    print_section("Your Consumption Today Compared To The Average Dane");
+    printf("\n");
     for (i = 0; i < amount_of_plugs; i++)
     {
         /* this switch-case is sorted after the id of the users plugs.
@@ -101,9 +105,29 @@ void compare_plugs(user_profile user, user_profile user_prev_avg, average_profil
         print_percentage_of_average(i, current_appliance, user.plug[i].power_consumption, average.appliances[current_appliance].power_consumption, min_field_width_appliance, min_field_width_plug);
     }
 
-    /* prints the percent-comparison between user current consumption and the average of their previous*/
+    /* Prints the percent-comparison between user current consumption and the average of their previous*/
+
+    /* Average power consumption, calculates from the appliances plugged in*/
+    average_power_consumption = average_consumption(amount_of_plugs, average.appliances, user);
+    printf("\nThe power consumption of the average Dane is %.4f kWh pr. day for the same appliances as you.\n", average_power_consumption);
+
+    /* Total user consumption calculates from the amount of plug.*/
+    your_total_consumption = total_consumption(amount_of_plugs, user.plug);
+    printf("Your total power consumption is %.4f kWh today.\n", your_total_consumption);
+
+    /* This if/else will print the percentage of user-power consumption compared to the average power consumption.
+       And will tell you how much money it cost and Co2 it emitted, and will display charts of the data. */
+    if (your_total_consumption > average_power_consumption)
+        printf("You use %.2f%% more power then the average Dane.\n",
+               (percent(your_total_consumption - average_power_consumption, average_power_consumption)));
+    else
+        printf("You use %.2f%% less power then the average Dane.\n",
+               (percent(average_power_consumption - your_total_consumption, average_power_consumption)));
+
     printf("\n");
 
+    print_section("Your Consumption Today Compared To Your Previous Days");
+    printf("\n");
     if (days_simulated > 1)
     {
         for (i = 0; i < amount_of_plugs; i++)
