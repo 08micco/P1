@@ -54,7 +54,7 @@ int main()
     int days_simulated;
 
     /* The user is asked for how many days they wish to simulate data over, and the input is restricted so <100 is set to 100, and >1 is set to 1. */
-    printf("Power Plug Simulator\n\nEnter amount of days you want to simulate data for (MIN: 1, MAX: 100): ");
+    printf("Power Plug Simulator\nEnter amount of days you want to simulate data for.\n[MIN: 1, MAX: 100]: ");
     scanf(" %d", &days_simulated);
     if (days_simulated > 100)
         days_simulated = 100;
@@ -75,7 +75,7 @@ int main()
         /* Oven */
         0.2466,
         0.9862,
-        /* Refigerator */
+        /* Refrigerator */
         0.5023,
         0.5552,
         /* Coffee machine */
@@ -90,6 +90,7 @@ int main()
 
     write_appliance_data_to_file(user, days_simulated);
 
+    printf("Successfully simulated power consumption data for %d days.", days_simulated);
     return 0;
 }
 
@@ -171,9 +172,9 @@ void write_appliance_data_to_file(user_data user[], int days_simulated)
     fprintf(file, "\n ]\n}"); /* Close curly bracket */
 
     fclose(file);
-    printf("Successfully simulated power consumption data for %d days.", days_simulated);
 }
 
+/* Calculates time/date */
 int calc_time(struct tm *current_time, int index, int days_simulated)
 {
     time_t new_time = mktime(current_time) - ((days_simulated - index) * (60 * 60 * 24));
